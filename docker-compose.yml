@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+  #=== Rails API =============================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      # Apple Silicon (M1/M2/M3/M4) は amd64 イメージを明示
+      platforms: ["linux/amd64"]
+    entrypoint: ["./entrypoint.sh"]
+    command: rails server -b 0.0.0.0 -p 3000
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./backend/.env.local    # 個人用・秘匿値
+    ports:
+      - "3000:3000"             # Rails API
+    depends_on:
+      - db
+
+  #=== React (Vite) ==========================================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      platforms: ["linux/amd64"]
+    command: npm run dev
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules   # node_modules をホストに汚さない
+    environment:
+      - VITE_API_URL=http://backend:3000  # コンテナ内からはサービス名でアクセス
+    ports:
+      - "5173:5173"             # Vite dev server
+    depends_on:
+      - backend
+
+  #=== PostgreSQL（デフォルト）==============================================
+  db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  db-data:
