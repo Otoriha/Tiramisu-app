@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import { testYouTubeApi } from './demo/youtubeDemo'
 import { SearchInput } from './components/SearchInput'
+import { VideoCard } from './components/VideoCard'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -53,6 +54,30 @@ function App() {
             placeholder="YouTube動画を検索..."
             disabled={isLoading}
           />
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <h3>VideoCardコンポーネント デモ</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px', marginTop: '16px' }}>
+            <VideoCard
+              videoId="dQw4w9WgXcQ"
+              title="Rick Astley - Never Gonna Give You Up (Official Video)"
+              thumbnail="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg"
+              duration="3:33"
+            />
+            <VideoCard
+              videoId="9bZkp7q19f0"
+              title="PSY - GANGNAM STYLE (강남스타일) M/V"
+              thumbnail="https://img.youtube.com/vi/9bZkp7q19f0/maxresdefault.jpg"
+              duration="4:12"
+            />
+            <VideoCard
+              videoId="kJQP7kiw5Fk"
+              title="Luis Fonsi - Despacito ft. Daddy Yankee"
+              thumbnail="https://img.youtube.com/vi/kJQP7kiw5Fk/maxresdefault.jpg"
+              duration="4:41"
+            />
+          </div>
         </div>
         
         <button 
