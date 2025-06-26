@@ -9,11 +9,17 @@ export interface SearchInputProps {
   placeholder?: string
   disabled?: boolean
   className?: string
+  defaultValue?: string
 }
 
 const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
-  ({ onSearch, placeholder = "検索...", disabled = false, className, ...props }, ref) => {
-    const [searchQuery, setSearchQuery] = React.useState("")
+  ({ onSearch, placeholder = "検索...", disabled = false, className, defaultValue = "", ...props }, ref) => {
+    const [searchQuery, setSearchQuery] = React.useState(defaultValue)
+
+    // Update search query when defaultValue changes
+    React.useEffect(() => {
+      setSearchQuery(defaultValue)
+    }, [defaultValue])
 
     const debouncedSearch = React.useMemo(
       () => debounce((query: string) => {
