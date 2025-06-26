@@ -2,6 +2,7 @@ import * as React from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
+import { debounce } from "@/utils/debounce"
 
 export interface SearchInputProps {
   onSearch: (query: string) => void
@@ -13,6 +14,15 @@ export interface SearchInputProps {
 const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
   ({ onSearch, placeholder = "検索...", disabled = false, className, ...props }, ref) => {
     const [searchQuery, setSearchQuery] = React.useState("")
+
+    const debouncedSearch = React.useMemo(
+      () => debounce((query: string) => {
+        if (query.trim()) {
+          onSearch(query.trim())
+        }
+      }, 300),
+      [onSearch]
+    )
 
     const handleSearch = React.useCallback(() => {
       if (searchQuery.trim()) {
@@ -28,7 +38,9 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
     }
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(event.target.value)
+      const value = event.target.value
+      setSearchQuery(value)
+      debouncedSearch(value)
     }
 
     return (
