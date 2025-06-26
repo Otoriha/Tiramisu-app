@@ -2,7 +2,7 @@
 
 ---
 
-## ■サービス概要 (3行)
+## ■サービス概要 
 
 1. **ティラミス専門のレシピ＆店舗検索アプリ** – Web／モバイル対応 PWA。
 2. **YouTube と主要レシピサイトから収集したティラミスレシピ** をカテゴリ・難易度別に一覧表示。
@@ -67,7 +67,7 @@
 
 ---
 
-## ■機能の実装方針予定 (AI 非使用)
+## ■機能の実装方針予定
 
 | 機能             | 技術スタック / ライブラリ                                              | メモ                                   |
 | -------------- | ----------------------------------------------------------- | ------------------------------------ |
@@ -80,95 +80,3 @@
 | **デプロイ**       | Render.com (`backend`) / Netlify (`frontend`)               | CI/CD: GitHub Actions                |
 
 ---
-
-## ■開発環境・セットアップ
-
-### 前提条件
-- Docker & Docker Compose
-- Node.js 20.x
-- Ruby 3.3.x
-
-### セットアップ手順
-
-1. **リポジトリをクローン**
-   ```bash
-   git clone https://github.com/Otoriha/Tiramisu-app.git
-   cd Tiramisu-app
-   ```
-
-2. **Docker環境で起動**
-   ```bash
-   docker-compose up -d
-   ```
-
-3. **アクセス**
-   - フロントエンド: http://localhost:5173
-   - バックエンド API: http://localhost:3000
-   - PostgreSQL: localhost:5432
-
-### 開発コマンド
-
-```bash
-# テスト実行 (フロントエンド)
-docker-compose run --rm frontend npm run test
-
-# テスト実行 (バックエンド)
-docker-compose run --rm backend bundle exec rspec
-
-# ビルド
-docker-compose run --rm frontend npm run build
-```
-
----
-
-## ■ディレクトリ構成
-
-```text
-Tiramisu-app/
-├── frontend/                # React + Vite フロントエンド
-│   ├── src/
-│   │   ├── components/      # UI コンポーネント
-│   │   ├── hooks/          # カスタムフック
-│   │   ├── services/       # API 通信
-│   │   └── utils/          # 共通ユーティリティ
-│   ├── public/
-│   └── package.json
-├── backend/                 # Rails API バックエンド
-│   ├── app/
-│   │   ├── controllers/
-│   │   ├── models/
-│   │   └── services/
-│   ├── config/
-│   └── Gemfile
-├── docker-compose.yml       # Docker 環境定義
-└── README.md
-```
-
----
-
-## ■最近の更新
-
-### v0.1.0 - 検索機能の最適化
-- SearchInputコンポーネントにdebounce機能を追加
-- YouTube API呼び出しの最適化（300ms遅延）
-- 包括的なユニットテストを追加
-
----
-
-## ■コントリビュート
-
-1. Fork このリポジトリ
-2. 新しいブランチを作成 (`git checkout -b feature/amazing-feature`)
-3. 変更をコミット (`git commit -m 'Add some amazing feature'`)
-4. ブランチをプッシュ (`git push origin feature/amazing-feature`)
-5. プルリクエストを作成
-
----
-
-## ■ライセンス
-
-MIT License © 2025 Solo Developer
-
----
-
-**Made with ❤️ for Tiramisu lovers**
