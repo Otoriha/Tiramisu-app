@@ -3,11 +3,12 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import { testYouTubeApi } from './demo/youtubeDemo'
+import { SearchInput } from './components/SearchInput'
 
 function App() {
   const [count, setCount] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
-  const [results, setResults] = useState<any>(null)
+  const [results, setResults] = useState<unknown>(null)
 
   const handleTestYouTubeApi = async () => {
     setIsLoading(true)
@@ -20,6 +21,12 @@ function App() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handleSearch = (query: string) => {
+    console.log('検索クエリ:', query)
+    // TODO: 実際の検索処理を実装
+    setResults({ searchQuery: query, message: '検索機能はまだ実装されていません' })
   }
 
   return (
@@ -38,6 +45,16 @@ function App() {
           count is {count}
         </button>
         <br /><br />
+        
+        <div style={{ marginBottom: '20px' }}>
+          <h3>検索コンポーネント</h3>
+          <SearchInput 
+            onSearch={handleSearch}
+            placeholder="YouTube動画を検索..."
+            disabled={isLoading}
+          />
+        </div>
+        
         <button 
           onClick={handleTestYouTubeApi} 
           disabled={isLoading}
@@ -45,14 +62,14 @@ function App() {
         >
           {isLoading ? 'テスト中...' : 'YouTube API テスト実行'}
         </button>
-        {results && (
+        {results ? (
           <div style={{ marginTop: '20px', textAlign: 'left' }}>
             <h3>結果:</h3>
             <pre style={{ fontSize: '12px', overflow: 'auto', maxHeight: '300px' }}>
               {JSON.stringify(results, null, 2)}
             </pre>
           </div>
-        )}
+        ) : null}
       </div>
     </>
   )
