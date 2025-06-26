@@ -3,8 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import { testYouTubeApi } from './demo/youtubeDemo'
-import { SearchInput } from './components/SearchInput'
-import { VideoCard } from './components/VideoCard'
+import { SearchInput, VideoGrid } from './components'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -57,27 +56,50 @@ function App() {
         </div>
 
         <div style={{ marginBottom: '20px' }}>
-          <h3>VideoCardコンポーネント デモ</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px', marginTop: '16px' }}>
-            <VideoCard
-              videoId="dQw4w9WgXcQ"
-              title="Rick Astley - Never Gonna Give You Up (Official Video)"
-              thumbnail="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg"
-              duration="3:33"
-            />
-            <VideoCard
-              videoId="9bZkp7q19f0"
-              title="PSY - GANGNAM STYLE (강남스타일) M/V"
-              thumbnail="https://img.youtube.com/vi/9bZkp7q19f0/maxresdefault.jpg"
-              duration="4:12"
-            />
-            <VideoCard
-              videoId="kJQP7kiw5Fk"
-              title="Luis Fonsi - Despacito ft. Daddy Yankee"
-              thumbnail="https://img.youtube.com/vi/kJQP7kiw5Fk/maxresdefault.jpg"
-              duration="4:41"
-            />
-          </div>
+          <h3>VideoGrid コンポーネント デモ</h3>
+          <VideoGrid
+            videos={[
+              {
+                videoId: "dQw4w9WgXcQ",
+                title: "Rick Astley - Never Gonna Give You Up (Official Video)",
+                thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+                duration: "3:33"
+              },
+              {
+                videoId: "9bZkp7q19f0",
+                title: "PSY - GANGNAM STYLE (강남스타일) M/V",
+                thumbnail: "https://img.youtube.com/vi/9bZkp7q19f0/maxresdefault.jpg",
+                duration: "4:12"
+              },
+              {
+                videoId: "kJQP7kiw5Fk",
+                title: "Luis Fonsi - Despacito ft. Daddy Yankee",
+                thumbnail: "https://img.youtube.com/vi/kJQP7kiw5Fk/maxresdefault.jpg",
+                duration: "4:41"
+              },
+              {
+                videoId: "JGwWNGJdvx8",
+                title: "Ed Sheeran - Shape of You (Official Video)",
+                thumbnail: "https://img.youtube.com/vi/JGwWNGJdvx8/maxresdefault.jpg",
+                duration: "3:53"
+              },
+              {
+                videoId: "fJ9rUzIMcZQ",
+                title: "Queen - Bohemian Rhapsody (Official Video)",
+                thumbnail: "https://img.youtube.com/vi/fJ9rUzIMcZQ/maxresdefault.jpg",
+                duration: "5:55"
+              },
+              {
+                videoId: "YQHsXMglC9A",
+                title: "Adele - Hello (Official Music Video)",
+                thumbnail: "https://img.youtube.com/vi/YQHsXMglC9A/maxresdefault.jpg",
+                duration: "6:07"
+              }
+            ]}
+            columns={3}
+            gap={16}
+            maxRows={2}
+          />
         </div>
         
         <button 
