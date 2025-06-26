@@ -41,7 +41,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           disabled={disabled}
-          className="flex-1"
+          className="flex-1 text-foreground"
           aria-label="検索入力"
           {...props}
         />
