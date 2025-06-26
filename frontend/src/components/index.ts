@@ -1,4 +1,6 @@
 export { SearchInput } from './SearchInput'
 export { VideoCard } from './VideoCard'
+export { VideoGrid } from './VideoGrid'
 export type { SearchInputProps } from './SearchInput'
 export type { VideoCardProps } from './VideoCard'
+export type { VideoGridProps } from './VideoGrid'
