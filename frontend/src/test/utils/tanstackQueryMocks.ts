@@ -1,54 +1,83 @@
 import type { UseQueryResult } from '@tanstack/react-query';
 
+// Simplified mock utility for testing
 export function createMockQueryResult<TData = unknown, TError = Error>(
-  data?: TData,
-  error?: TError,
-  isLoading = false
+  overrides: Partial<UseQueryResult<TData, TError>> = {}
 ): UseQueryResult<TData, TError> {
   const baseResult = {
-    data: data as TData,
-    error: error as TError,
-    isError: !!error,
-    isSuccess: !error && data !== undefined,
-    isLoading,
-    isPending: isLoading,
-    isFetched: !isLoading,
-    isFetching: isLoading,
-    status: error ? 'error' as const : !isLoading ? 'success' as const : 'pending' as const,
-    fetchStatus: isLoading ? 'fetching' as const : 'idle' as const,
+    data: undefined as TData,
+    error: null as TError | null,
+    isError: false,
+    isSuccess: false,
+    isLoading: false,
+    isPending: false,
+    isFetched: false,
+    isFetching: false,
+    status: 'pending' as const,
+    fetchStatus: 'idle' as const,
     failureCount: 0,
     failureReason: null,
     errorUpdateCount: 0,
     dataUpdatedAt: Date.now(),
-    errorUpdatedAt: error ? Date.now() : 0,
+    errorUpdatedAt: 0,
     isLoadingError: false,
     isRefetchError: false,
     isPlaceholderData: false,
     isStale: false,
-    isFetchedAfterMount: true,
+    isFetchedAfterMount: false,
     isRefetching: false,
+    isInitialLoading: false,
+    isPaused: false,
+    refetch: vi.fn(),
+    remove: vi.fn(),
+    promise: Promise.resolve(undefined as TData),
   };
 
   return {
     ...baseResult,
-    refetch: vi.fn(),
-    remove: vi.fn(),
-    promise: Promise.resolve(data as TData),
+    ...overrides,
   } as UseQueryResult<TData, TError>;
 }
 
 export function createSuccessQueryResult<TData = unknown>(
   data: TData
 ): UseQueryResult<TData, Error> {
-  return createMockQueryResult(data, undefined, false);
+  return createMockQueryResult<TData, Error>({
+    data,
+    error: null,
+    isError: false,
+    isSuccess: true,
+    isLoading: false,
+    isPending: false,
+    isFetched: true,
+    status: 'success',
+  });
 }
 
-export function createLoadingQueryResult<TData = unknown>(): UseQueryResult<TData, Error> {
-  return createMockQueryResult(undefined, undefined, true);
+export function createLoadingQueryResult<TData = unknown>(): UseQueryResult<TData | undefined, Error> {
+  return createMockQueryResult<TData | undefined, Error>({
+    data: undefined,
+    error: null,
+    isError: false,
+    isSuccess: false,
+    isLoading: true,
+    isPending: true,
+    isFetched: false,
+    status: 'pending',
+  });
 }
 
 export function createErrorQueryResult<TError = Error>(
   error: TError
-): UseQueryResult<unknown, TError> {
-  return createMockQueryResult(undefined, error, false);
+): UseQueryResult<undefined, TError> {
+  return createMockQueryResult<undefined, TError>({
+    data: undefined,
+    error,
+    isError: true,
+    isSuccess: false,
+    isLoading: false,
+    isPending: false,
+    isFetched: true,
+    status: 'error',
+  });
 }
