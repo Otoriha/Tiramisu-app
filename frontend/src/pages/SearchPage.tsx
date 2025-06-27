@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { SearchInput, VideoGrid } from '../components'
+import { SearchInput, VideoGrid, SkeletonCard } from '../components'
 import useYouTubeSearch from '../hooks/useYouTubeSearch'
 import type { VideoCardProps } from '../components/VideoCard'
 
@@ -39,7 +39,7 @@ const SearchPage: React.FC = () => {
   }, [searchQuery])
 
   // Use YouTube search hook
-  const { data: videos, isLoading, error } = useYouTubeSearch(urlQuery, {
+  const { data: videos, isLoading, error, refetch } = useYouTubeSearch(urlQuery, {
     enabled: !!urlQuery
   })
 
@@ -74,21 +74,51 @@ const SearchPage: React.FC = () => {
 
         <main>
           {error && (
-            <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-              エラーが発生しました: {error.message}
+            <div className="text-center py-12">
+              <div className="mb-6 p-6 bg-red-50 border border-red-200 text-red-800 rounded-lg max-w-md mx-auto">
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold mb-2">エラーが発生しました</h3>
+                  <p className="text-sm">{error.message}</p>
+                </div>
+                <button
+                  onClick={() => refetch()}
+                  className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+                >
+                  再試行
+                </button>
+              </div>
             </div>
           )}
 
           {isLoading && (
-            <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <p className="mt-2 text-gray-600">検索中...</p>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                「{searchQuery}」を検索中...
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                {Array.from({ length: 6 }, (_, index) => (
+                  <SkeletonCard key={index} />
+                ))}
+              </div>
             </div>
           )}
 
           {!isLoading && !error && searchQuery && videoCards.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-gray-600">「{searchQuery}」に関する動画が見つかりませんでした。</p>
+              <div className="mb-4">
+                <p className="text-gray-600 text-lg mb-2">「{searchQuery}」に関する動画が見つかりませんでした。</p>
+                <p className="text-gray-500 text-sm">他のキーワードで検索してみてください。</p>
+              </div>
+              <button
+                onClick={() => {
+                  setSearchQuery('')
+                  const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement
+                  searchInput?.focus()
+                }}
+                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                別のキーワードで検索
+              </button>
             </div>
           )}
 
