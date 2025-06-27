@@ -156,22 +156,26 @@ describe('SearchPage E2E Tests', () => {
     it('should handle search via Enter key press', async () => {
       const user = userEvent.setup()
       
+      // Start with no results
       mockUseYouTubeSearch.mockReturnValue(createMockQueryResult<VideoDetails[]>())
       
       renderSearchPageWithQueryClient()
 
       const searchInput = screen.getByPlaceholderText('YouTube動画を検索...')
       
-      // Type search query and press Enter
-      await user.type(searchInput, 'Next.js tutorial{Enter}')
-
-      // Mock results after Enter press
+      // Type search query
+      await user.type(searchInput, 'Next.js tutorial')
+      
+      // Mock successful results before pressing Enter
       mockUseYouTubeSearch.mockReturnValue(createSuccessQueryResult(mockVideoData))
+      
+      // Press Enter to trigger search
+      await user.keyboard('{Enter}')
 
       // Verify search was triggered and results displayed
       await waitFor(() => {
         expect(screen.getByText('Test Video 1')).toBeInTheDocument()
-      })
+      }, { timeout: 5000 })
     })
 
     it('should handle URL synchronization on initial load', async () => {

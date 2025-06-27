@@ -149,27 +149,15 @@ describe('YouTubeApiWrapper', () => {
 
   describe('constructor', () => {
     it('should throw error when API key is not provided', () => {
-      // 現在の環境変数を保存
-      const originalEnv = import.meta.env;
-      
-      // 空のAPIキーでモック
-      Object.defineProperty(import.meta, 'env', {
-        value: {
-          ...originalEnv,
-          VITE_YOUTUBE_API_KEY: ''
-        },
-        writable: true,
-        configurable: true
-      });
+      try {
+        // 空のAPIキーでモック
+        vi.stubEnv('VITE_YOUTUBE_API_KEY', '');
 
-      expect(() => new YouTubeApiWrapper()).toThrow('YouTube API key is required. Please set VITE_YOUTUBE_API_KEY in your .env.local file.');
-      
-      // 元の環境変数を復元
-      Object.defineProperty(import.meta, 'env', {
-        value: originalEnv,
-        writable: true,
-        configurable: true
-      });
+        expect(() => new YouTubeApiWrapper()).toThrow('YouTube API key is required. Please set VITE_YOUTUBE_API_KEY in your .env.local file.');
+      } finally {
+        // 元の環境変数を復元
+        vi.unstubAllEnvs();
+      }
     });
   });
 });
