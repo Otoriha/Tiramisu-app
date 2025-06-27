@@ -241,8 +241,6 @@ describe('SearchPage E2E Tests', () => {
     })
 
     it('should handle empty search results', async () => {
-      const user = userEvent.setup()
-      
       // Mock empty response
       mockUseYouTubeSearch.mockReturnValue(createSuccessQueryResult<VideoDetails[]>([]))
       
