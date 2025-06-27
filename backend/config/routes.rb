@@ -8,9 +8,18 @@ Rails.application.routes.draw do
   # API routes
   namespace :api do
     namespace :v1 do
+      # 認証
+      post '/auth/register', to: 'auth#register'
+      post '/auth/login', to: 'auth#login'
+      get '/auth/me', to: 'auth#me'
+      post '/auth/refresh', to: 'auth#refresh'
+
       resources :recipes, only: [:index, :show] do
         collection do
           get :search
+        end
+        member do
+          post :increment_view
         end
       end
 

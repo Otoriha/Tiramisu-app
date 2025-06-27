@@ -3,6 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest'
 import SearchPage from '../../pages/SearchPage'
+import { createMockQueryResult, createErrorQueryResult } from '../utils/tanstackQueryMocks'
+import type { VideoDetails } from '../../types/youtube'
 
 // Mock the useYouTubeSearch hook
 vi.mock('../../hooks/useYouTubeSearch', () => ({
@@ -39,36 +41,6 @@ afterEach(() => {
 
 const mockUseYouTubeSearch = vi.mocked(await import('../../hooks/useYouTubeSearch')).default
 
-// Helper function to create complete mock query result with proper typing
-const createMockQueryResult = (overrides = {}) => ({
-  data: undefined,
-  isLoading: false,
-  error: null,
-  refetch: vi.fn(),
-  isError: false,
-  isPending: false,
-  isLoadingError: false,
-  isRefetchError: false,
-  isSuccess: false,
-  isStale: false,
-  isFetching: false,
-  isPaused: false,
-  isPlaceholderData: false,
-  isFetched: false,
-  isFetchedAfterMount: false,
-  isRefetching: false,
-  errorUpdateCount: 0,
-  dataUpdatedAt: 0,
-  errorUpdatedAt: 0,
-  failureCount: 0,
-  failureReason: null,
-  fetchStatus: 'idle' as const,
-  status: 'success' as const,
-  isInitialLoading: false,
-  promise: Promise.resolve([]),
-  ...overrides
-})
-
 const renderSearchPageWithQueryClient = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -103,12 +75,7 @@ describe('SearchPage Error Handling Tests', () => {
       // Mock API failure
       const error = new Error('API request failed')
       const mockRefetch = vi.fn()
-      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult({ 
-        error, 
-        refetch: mockRefetch, 
-        isError: true,
-        status: 'error'
-      }))
+      mockUseYouTubeSearch.mockReturnValue(createErrorQueryResult<VideoDetails[]>(error, { refetch: mockRefetch }))
       
       // Set up with search query to trigger error state
       window.location.search = '?q=test%20query'
@@ -134,11 +101,7 @@ describe('SearchPage Error Handling Tests', () => {
     it('should handle network connectivity errors', async () => {
       // Mock network error
       const error = new Error('Network Error: Failed to fetch')
-      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult({ 
-        error, 
-        isError: true,
-        status: 'error'
-      }))
+      mockUseYouTubeSearch.mockReturnValue(createErrorQueryResult<VideoDetails[]>(error))
       
       // Set up with search query
       window.location.search = '?q=network%20test'
@@ -161,12 +124,7 @@ describe('SearchPage Error Handling Tests', () => {
       // Start with error state
       const error = new Error('Initial API failure')
       const mockRefetch = vi.fn()
-      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult({ 
-        error, 
-        refetch: mockRefetch, 
-        isError: true,
-        status: 'error'
-      }))
+      mockUseYouTubeSearch.mockReturnValue(createErrorQueryResult<VideoDetails[]>(error, { refetch: mockRefetch }))
       
       // Set up with search query
       window.location.search = '?q=retry%20test'
@@ -189,11 +147,7 @@ describe('SearchPage Error Handling Tests', () => {
     it('should maintain search input state during error', async () => {
       // Mock API failure
       const error = new Error('API failure')
-      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult({ 
-        error, 
-        isError: true,
-        status: 'error'
-      }))
+      mockUseYouTubeSearch.mockReturnValue(createErrorQueryResult<VideoDetails[]>(error))
       
       // Set up with search query
       window.location.search = '?q=state%20test'
@@ -215,11 +169,7 @@ describe('SearchPage Error Handling Tests', () => {
       
       // Mock API failure
       const error = new Error('Focus test error')
-      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult({ 
-        error, 
-        isError: true,
-        status: 'error'
-      }))
+      mockUseYouTubeSearch.mockReturnValue(createErrorQueryResult<VideoDetails[]>(error))
       
       // Set up with search query
       window.location.search = '?q=focus%20test'
