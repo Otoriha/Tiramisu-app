@@ -1,33 +1,130 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useRecipes } from '../hooks/useRecipes'
 import { useStores } from '../hooks/useStores'
+import { SearchInput } from '../components/SearchInput'
 
 const HomePage: React.FC = () => {
+  const navigate = useNavigate()
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null)
+  const [locationError, setLocationError] = useState<string>('')
+
   // 人気レシピを取得（最初の6件）
   const { data: recipesResponse, isLoading: recipesLoading, error: recipesError } = useRecipes({
     per_page: 6
   })
 
-  // 近くのストアを取得（最初の4件）
+  // 近くのストアを取得（位置情報があれば位置ベース、なければ最初の4件）
   const { data: storesResponse, isLoading: storesLoading, error: storesError } = useStores({
+    ...(userLocation && {
+      latitude: userLocation.latitude,
+      longitude: userLocation.longitude,
+      radius: 10
+    }),
     per_page: 4
   })
 
   const recipes = recipesResponse?.data || []
   const stores = storesResponse?.data || []
 
+  // レシピ検索ハンドラー
+  const handleRecipeSearch = (query: string) => {
+    navigate(`/search?q=${encodeURIComponent(query)}`)
+  }
+
+  // 位置情報を取得
+  const handleGetLocation = () => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          })
+          setLocationError('')
+        },
+        (error) => {
+          console.error('位置情報の取得に失敗:', error)
+          setLocationError('位置情報の取得に失敗しました。設定を確認してください。')
+        }
+      )
+    } else {
+      setLocationError('このブラウザは位置情報をサポートしていません。')
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
       <div className="container mx-auto px-4 py-8">
         {/* ヒーローセクション */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            ティラミス専門アプリ
-          </h1>
-          <p className="text-lg text-gray-600 mb-8">
-            美味しいティラミスレシピと専門店を見つけよう
-          </p>
+        <div className="text-center mb-16">
+          <div className="mb-8">
+            <span className="text-6xl mb-4 block">🍰</span>
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6">
+              ティラミスの世界
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
+              本格イタリアンティラミスから手作りレシピまで。<br className="hidden md:block" />
+              あなたの特別な一日を甘く彩ります。
+            </p>
+          </div>
+        </div>
+
+        {/* 検索セクション */}
+        <div className="bg-white rounded-2xl shadow-xl p-8 mb-16">
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* レシピ検索 */}
+            <div className="text-center">
+              <div className="text-4xl mb-4">📝</div>
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">レシピを探す</h3>
+              <p className="text-gray-600 mb-6">
+                お家で簡単に作れるレシピから<br />
+                本格的なプロレシピまで
+              </p>
+              <SearchInput 
+                onSearch={handleRecipeSearch}
+                placeholder="レシピを検索..."
+                className="max-w-md mx-auto"
+              />
+            </div>
+
+            {/* ストア検索 */}
+            <div className="text-center">
+              <div className="text-4xl mb-4">🏦</div>
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">専門店を探す</h3>
+              <p className="text-gray-600 mb-6">
+                あなたの近くのティラミス専門店や<br />
+                おすすめカフェを見つけよう
+              </p>
+              <div className="space-y-3">
+                {userLocation ? (
+                  <div className="text-green-600 text-sm mb-3">
+                    ✓ 位置情報を取得済み（近くの店舗を表示中）
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleGetLocation}
+                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors mb-3"
+                  >
+                    📍 現在地から探す
+                  </button>
+                )}
+                <div>
+                  <Link
+                    to="/stores"
+                    className="inline-block bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors"
+                  >
+                    全ての店舗を見る
+                  </Link>
+                </div>
+                {locationError && (
+                  <div className="text-red-600 text-sm mt-2">
+                    {locationError}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* 人気レシピセクション */}

@@ -66,7 +66,7 @@ describe('debounce', () => {
   })
 
   it('should work with functions that return values', () => {
-    const mockFn = vi.fn((_arg: string) => 'result')
+    const mockFn = vi.fn(() => 'result')
     const debouncedFn = debounce(mockFn, 300)
 
     const result = debouncedFn('test')
