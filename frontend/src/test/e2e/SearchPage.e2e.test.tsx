@@ -3,6 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest'
 import SearchPage from '../../pages/SearchPage'
+import { createMockQueryResult, createSuccessQueryResult, createLoadingQueryResult } from '../utils/tanstackQueryMocks'
+import type { VideoDetails } from '../../types/youtube'
 
 // Mock the useYouTubeSearch hook
 vi.mock('../../hooks/useYouTubeSearch', () => ({
@@ -29,38 +31,8 @@ Object.defineProperty(window, 'location', {
 
 const mockUseYouTubeSearch = vi.mocked(await import('../../hooks/useYouTubeSearch')).default
 
-// Helper function to create complete mock query result
-const createMockQueryResult = (overrides = {}) => ({
-  data: undefined,
-  isLoading: false,
-  error: null,
-  refetch: vi.fn(),
-  isError: false,
-  isPending: false,
-  isLoadingError: false,
-  isRefetchError: false,
-  isSuccess: false,
-  isStale: false,
-  isFetching: false,
-  isPaused: false,
-  isPlaceholderData: false,
-  isFetched: false,
-  isFetchedAfterMount: false,
-  isRefetching: false,
-  errorUpdateCount: 0,
-  dataUpdatedAt: 0,
-  errorUpdatedAt: 0,
-  failureCount: 0,
-  failureReason: null,
-  fetchStatus: 'idle' as const,
-  status: 'pending' as const,
-  isInitialLoading: false,
-  promise: Promise.resolve(),
-  ...overrides
-})
-
 // Mock video data for testing
-const mockVideoData = [
+const mockVideoData: VideoDetails[] = [
   {
     id: 'video1',
     title: 'Test Video 1',
@@ -131,7 +103,7 @@ describe('SearchPage E2E Tests', () => {
       const user = userEvent.setup()
       
       // Start with no search results
-      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult())
+      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult<VideoDetails[]>())
       
       renderSearchPageWithQueryClient()
 
@@ -146,10 +118,7 @@ describe('SearchPage E2E Tests', () => {
       expect(searchInput).toHaveValue('React testing')
 
       // Mock successful search results
-      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult({ 
-        data: mockVideoData, 
-        isSuccess: true 
-      }))
+      mockUseYouTubeSearch.mockReturnValue(createSuccessQueryResult(mockVideoData))
       
       // User clicks search button
       const searchButton = screen.getByRole('button', { name: /検索実行/i })
@@ -178,7 +147,7 @@ describe('SearchPage E2E Tests', () => {
 
     it('should display loading state during search', async () => {
       // Mock loading state
-      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult({ isLoading: true }))
+      mockUseYouTubeSearch.mockReturnValue(createLoadingQueryResult<VideoDetails[]>())
       
       // Set initial query to trigger loading state
       window.location.search = '?q=test'
@@ -199,7 +168,7 @@ describe('SearchPage E2E Tests', () => {
     it('should handle search via Enter key press', async () => {
       const user = userEvent.setup()
       
-      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult())
+      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult<VideoDetails[]>())
       
       renderSearchPageWithQueryClient()
 
@@ -209,10 +178,7 @@ describe('SearchPage E2E Tests', () => {
       await user.type(searchInput, 'Next.js tutorial{Enter}')
 
       // Mock results after Enter press
-      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult({ 
-        data: mockVideoData, 
-        isSuccess: true 
-      }))
+      mockUseYouTubeSearch.mockReturnValue(createSuccessQueryResult(mockVideoData))
 
       // Verify search was triggered and results displayed
       await waitFor(() => {
@@ -224,10 +190,7 @@ describe('SearchPage E2E Tests', () => {
       // Mock location with search query
       window.location.search = '?q=TypeScript'
       
-      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult({ 
-        data: mockVideoData, 
-        isSuccess: true 
-      }))
+      mockUseYouTubeSearch.mockReturnValue(createSuccessQueryResult(mockVideoData))
 
       renderSearchPageWithQueryClient()
 
@@ -251,10 +214,7 @@ describe('SearchPage E2E Tests', () => {
         writable: true,
       })
 
-      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult({ 
-        data: mockVideoData, 
-        isSuccess: true 
-      }))
+      mockUseYouTubeSearch.mockReturnValue(createSuccessQueryResult(mockVideoData))
       
       // Set up with search results
       window.location.search = '?q=JavaScript'
@@ -284,10 +244,7 @@ describe('SearchPage E2E Tests', () => {
       const user = userEvent.setup()
       
       // Mock empty response
-      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult({ 
-        data: [], 
-        isSuccess: true 
-      }))
+      mockUseYouTubeSearch.mockReturnValue(createSuccessQueryResult<VideoDetails[]>([]))
       
       // Set up with search query that returns no results
       window.location.search = '?q=nonexistent%20query'
@@ -307,7 +264,7 @@ describe('SearchPage E2E Tests', () => {
     it('should update URL when performing search', async () => {
       const user = userEvent.setup()
       
-      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult())
+      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult<VideoDetails[]>())
 
       renderSearchPageWithQueryClient()
 
@@ -325,7 +282,7 @@ describe('SearchPage E2E Tests', () => {
     it('should update document title based on search query', async () => {
       const user = userEvent.setup()
       
-      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult())
+      mockUseYouTubeSearch.mockReturnValue(createMockQueryResult<VideoDetails[]>())
 
       renderSearchPageWithQueryClient()
 
