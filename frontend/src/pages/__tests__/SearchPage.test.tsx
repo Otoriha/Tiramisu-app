@@ -29,6 +29,34 @@ Object.defineProperty(window, 'location', {
 
 const mockUseYouTubeSearch = vi.mocked(await import('../../hooks/useYouTubeSearch')).default
 
+// Helper function to create complete mock query result
+const createMockQueryResult = (overrides = {}) => ({
+  data: undefined,
+  isLoading: false,
+  error: null,
+  refetch: vi.fn(),
+  isError: false,
+  isPending: false,
+  isLoadingError: false,
+  isRefetchError: false,
+  isSuccess: false,
+  isStale: false,
+  isFetching: false,
+  isPaused: false,
+  isPlaceholderData: false,
+  isFetched: false,
+  isFetchedAfterMount: false,
+  isRefetching: false,
+  errorUpdateCount: 0,
+  dataUpdatedAt: 0,
+  errorUpdatedAt: 0,
+  failureCount: 0,
+  failureReason: null,
+  fetchStatus: 'idle' as const,
+  status: 'pending' as const,
+  ...overrides
+})
+
 const mockVideos = [
   {
     id: '1',
@@ -74,11 +102,7 @@ describe('SearchPage', () => {
   })
 
   it('renders search page with correct initial elements', () => {
-    mockUseYouTubeSearch.mockReturnValue({
-      data: undefined,
-      isLoading: false,
-      error: null
-    })
+    mockUseYouTubeSearch.mockReturnValue(createMockQueryResult())
 
     renderSearchPageWithQueryClient()
 
@@ -91,11 +115,7 @@ describe('SearchPage', () => {
     // Mock URL with query parameter
     window.location.search = '?q=test%20query'
     
-    mockUseYouTubeSearch.mockReturnValue({
-      data: undefined,
-      isLoading: false,
-      error: null
-    })
+    mockUseYouTubeSearch.mockReturnValue(createMockQueryResult())
 
     renderSearchPageWithQueryClient()
 
@@ -104,11 +124,7 @@ describe('SearchPage', () => {
   })
 
   it('updates document title when search query changes', async () => {
-    mockUseYouTubeSearch.mockReturnValue({
-      data: undefined,
-      isLoading: false,
-      error: null
-    })
+    mockUseYouTubeSearch.mockReturnValue(createMockQueryResult())
 
     const user = userEvent.setup()
     renderSearchPageWithQueryClient()
@@ -122,38 +138,44 @@ describe('SearchPage', () => {
     })
   })
 
-  it('displays loading state during search', () => {
-    mockUseYouTubeSearch.mockReturnValue({
-      data: undefined,
-      isLoading: true,
-      error: null
-    })
+  it('displays skeleton loading state during search', () => {
+    mockUseYouTubeSearch.mockReturnValue(createMockQueryResult({ isLoading: true }))
+
+    // Set up initial search query
+    window.location.search = '?q=test'
 
     renderSearchPageWithQueryClient()
 
-    expect(screen.getByText('検索中...')).toBeInTheDocument()
+    expect(screen.getByText('「test」を検索中...')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /検索実行/ })).toBeDisabled()
+    
+    // Check for skeleton cards (6 of them)
+    const skeletonCards = screen.getAllByRole('generic').filter(el => 
+      el.classList.contains('animate-pulse')
+    )
+    expect(skeletonCards).toHaveLength(6)
   })
 
-  it('displays error message when search fails', () => {
+  it('displays error state with retry button when search fails', async () => {
     const error = new Error('Search failed')
-    mockUseYouTubeSearch.mockReturnValue({
-      data: undefined,
-      isLoading: false,
-      error
-    })
+    const mockRefetch = vi.fn()
+    mockUseYouTubeSearch.mockReturnValue(createMockQueryResult({ error, refetch: mockRefetch, isError: true }))
 
+    const user = userEvent.setup()
     renderSearchPageWithQueryClient()
 
-    expect(screen.getByText('エラーが発生しました: Search failed')).toBeInTheDocument()
+    expect(screen.getByText('エラーが発生しました')).toBeInTheDocument()
+    expect(screen.getByText('Search failed')).toBeInTheDocument()
+    
+    const retryButton = screen.getByRole('button', { name: '再試行' })
+    expect(retryButton).toBeInTheDocument()
+    
+    await user.click(retryButton)
+    expect(mockRefetch).toHaveBeenCalledTimes(1)
   })
 
   it('displays search results when videos are found', () => {
-    mockUseYouTubeSearch.mockReturnValue({
-      data: mockVideos,
-      isLoading: false,
-      error: null
-    })
+    mockUseYouTubeSearch.mockReturnValue(createMockQueryResult({ data: mockVideos, isSuccess: true }))
 
     // Set up initial search query
     window.location.search = '?q=test'
@@ -165,27 +187,33 @@ describe('SearchPage', () => {
     expect(screen.getByText('Test Video 2')).toBeInTheDocument()
   })
 
-  it('displays no results message when search returns empty array', () => {
-    mockUseYouTubeSearch.mockReturnValue({
-      data: [],
-      isLoading: false,
-      error: null
-    })
+  it('displays enhanced empty state with re-search button when no results found', async () => {
+    mockUseYouTubeSearch.mockReturnValue(createMockQueryResult({ data: [], isSuccess: true }))
 
     // Set up initial search query
     window.location.search = '?q=no%20results'
 
+    const user = userEvent.setup()
     renderSearchPageWithQueryClient()
 
     expect(screen.getByText('「no results」に関する動画が見つかりませんでした。')).toBeInTheDocument()
+    expect(screen.getByText('他のキーワードで検索してみてください。')).toBeInTheDocument()
+    
+    const reSearchButton = screen.getByRole('button', { name: '別のキーワードで検索' })
+    expect(reSearchButton).toBeInTheDocument()
+    
+    // Mock the search input
+    const searchInput = screen.getByPlaceholderText('YouTube動画を検索...') as HTMLInputElement
+    
+    await user.click(reSearchButton)
+    
+    // Should clear the search
+    expect(searchInput).toHaveValue('')
+    // Focus functionality is tested indirectly through user interaction
   })
 
   it('updates URL when performing search', async () => {
-    mockUseYouTubeSearch.mockReturnValue({
-      data: undefined,
-      isLoading: false,
-      error: null
-    })
+    mockUseYouTubeSearch.mockReturnValue(createMockQueryResult())
 
     const user = userEvent.setup()
     renderSearchPageWithQueryClient()
@@ -205,11 +233,7 @@ describe('SearchPage', () => {
     // Start with a search query
     window.location.search = '?q=initial'
     
-    mockUseYouTubeSearch.mockReturnValue({
-      data: undefined,
-      isLoading: false,
-      error: null
-    })
+    mockUseYouTubeSearch.mockReturnValue(createMockQueryResult())
 
     const user = userEvent.setup()
     renderSearchPageWithQueryClient()
@@ -225,11 +249,7 @@ describe('SearchPage', () => {
   })
 
   it('sets default document title when no search query', () => {
-    mockUseYouTubeSearch.mockReturnValue({
-      data: undefined,
-      isLoading: false,
-      error: null
-    })
+    mockUseYouTubeSearch.mockReturnValue(createMockQueryResult())
 
     renderSearchPageWithQueryClient()
 
