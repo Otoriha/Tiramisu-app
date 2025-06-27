@@ -22,15 +22,24 @@ class Store < ApplicationRecord
   scope :by_price_level, ->(price_level) { where(price_level: price_level) }
   scope :with_reviews, -> { where('review_count > 0') }
   
-  # Geolocation scopes
+  # Geolocation scopes - using basic SQL for compatibility
   scope :nearby, ->(lat, lng, distance_km = 5) {
-    where(
-      "ST_DWithin(
-        ST_MakePoint(longitude, latitude)::geography,
-        ST_MakePoint(?, ?)::geography,
-        ?
-      )", lng, lat, distance_km * 1000
-    )
+    # Haversine formula in SQL
+    select("*, (
+      6371 * acos(
+        cos(radians(#{lat})) * cos(radians(latitude)) * 
+        cos(radians(longitude) - radians(#{lng})) + 
+        sin(radians(#{lat})) * sin(radians(latitude))
+      )
+    ) AS distance_km")
+    .where("(
+      6371 * acos(
+        cos(radians(?)) * cos(radians(latitude)) * 
+        cos(radians(longitude) - radians(?)) + 
+        sin(radians(?)) * sin(radians(latitude))
+      )
+    ) <= ?", lat, lng, lat, distance_km)
+    .order('distance_km ASC')
   }
 
   # Methods
