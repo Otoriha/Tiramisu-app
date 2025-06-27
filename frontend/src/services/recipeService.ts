@@ -3,7 +3,9 @@ import type { Recipe, RecipeSearchParams, ApiResponse } from '../types/api';
 
 export const recipeService = {
   async getRecipes(params?: RecipeSearchParams): Promise<ApiResponse<Recipe[]>> {
-    return apiClient.get<ApiResponse<Recipe[]>>('/recipes', { params });
+    return apiClient.get<ApiResponse<Recipe[]>>('/recipes', { 
+      params: params as Record<string, string | number | undefined>
+    });
   },
 
   async getRecipe(id: number): Promise<Recipe> {

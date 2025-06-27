@@ -1,4 +1,4 @@
-import { render, screen, cleanup } from '@testing-library/react'
+import { render, screen, cleanup, fireEvent } from '@testing-library/react'
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import { SearchInput } from '../SearchInput'
@@ -180,22 +180,22 @@ describe('SearchInput', () => {
     })
 
     afterEach(() => {
-      vi.restoreAllMocks()
+      vi.useRealTimers()
+      vi.clearAllMocks()
     })
 
     it('debounces API calls when typing', async () => {
-      const user = userEvent.setup()
       render(<SearchInput onSearch={mockOnSearch} />)
       
       const input = screen.getByRole('textbox')
       
-      // Type multiple characters quickly
-      await user.type(input, 'test')
+      // Type multiple characters
+      fireEvent.change(input, { target: { value: 'test' } })
       
       // onSearch should not be called immediately
       expect(mockOnSearch).not.toHaveBeenCalled()
       
-      // Wait for debounce delay (300ms)
+      // Advance timers by debounce delay (300ms)
       vi.advanceTimersByTime(300)
       
       // Now onSearch should be called once with the final value
@@ -204,19 +204,18 @@ describe('SearchInput', () => {
     })
 
     it('cancels previous debounced calls when typing continues', async () => {
-      const user = userEvent.setup()
       render(<SearchInput onSearch={mockOnSearch} />)
       
       const input = screen.getByRole('textbox')
       
       // Type first part
-      await user.type(input, 'te')
+      fireEvent.change(input, { target: { value: 'te' } })
       vi.advanceTimersByTime(200) // Less than 300ms
       
       // Type more before debounce completes
-      await user.type(input, 'st')
+      fireEvent.change(input, { target: { value: 'test' } })
       
-      // Advance time by 300ms from the last input
+      // Advance full debounce time
       vi.advanceTimersByTime(300)
       
       // Should only be called once with the final value
@@ -225,50 +224,47 @@ describe('SearchInput', () => {
     })
 
     it('does not debounce Enter key press', async () => {
-      const user = userEvent.setup()
       render(<SearchInput onSearch={mockOnSearch} />)
       
       const input = screen.getByRole('textbox')
       
-      await user.type(input, 'immediate')
-      
-      // Press Enter - should call onSearch immediately
-      await user.keyboard('{Enter}')
+      // Set value and press Enter
+      fireEvent.change(input, { target: { value: 'immediate' } })
+      fireEvent.keyDown(input, { key: 'Enter' })
       
       // Should be called immediately without waiting for debounce
       expect(mockOnSearch).toHaveBeenCalledWith('immediate')
       
-      // Advance time and verify no additional calls
+      // Advance timers and verify additional call from debounce
       vi.advanceTimersByTime(300)
-      expect(mockOnSearch).toHaveBeenCalledTimes(2) // One from debounce, one from Enter
+      expect(mockOnSearch).toHaveBeenCalledTimes(2) // One from Enter, one from debounce
     })
 
     it('does not debounce button click', async () => {
-      const user = userEvent.setup()
       render(<SearchInput onSearch={mockOnSearch} />)
       
       const input = screen.getByRole('textbox')
       const button = screen.getByRole('button', { name: '検索実行' })
       
-      await user.type(input, 'click test')
-      await user.click(button)
+      // Set value and click button
+      fireEvent.change(input, { target: { value: 'click test' } })
+      fireEvent.click(button)
       
       // Should be called immediately without waiting for debounce
       expect(mockOnSearch).toHaveBeenCalledWith('click test')
       
-      // Advance time and verify no additional calls beyond the expected
+      // Advance timers and verify additional call from debounce
       vi.advanceTimersByTime(300)
-      expect(mockOnSearch).toHaveBeenCalledTimes(2) // One from debounce, one from click
+      expect(mockOnSearch).toHaveBeenCalledTimes(2) // One from click, one from debounce
     })
 
     it('does not call API for empty or whitespace input via debounce', async () => {
-      const user = userEvent.setup()
       render(<SearchInput onSearch={mockOnSearch} />)
       
       const input = screen.getByRole('textbox')
       
       // Type only whitespace
-      await user.type(input, '   ')
+      fireEvent.change(input, { target: { value: '   ' } })
       
       // Wait for debounce
       vi.advanceTimersByTime(300)

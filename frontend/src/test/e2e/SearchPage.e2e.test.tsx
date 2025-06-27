@@ -38,30 +38,18 @@ const mockVideoData: VideoDetails[] = [
     title: 'Test Video 1',
     thumbnail: 'https://img.youtube.com/vi/video1/hqdefault.jpg',
     duration: '4:20',
-    description: 'Test description 1',
-    channelTitle: 'Test Channel 1',
-    publishedAt: '2024-01-01T00:00:00Z',
-    viewCount: 1000
   },
   {
     id: 'video2', 
     title: 'Test Video 2',
     thumbnail: 'https://img.youtube.com/vi/video2/hqdefault.jpg',
     duration: '3:15',
-    description: 'Test description 2',
-    channelTitle: 'Test Channel 2',
-    publishedAt: '2024-01-02T00:00:00Z',
-    viewCount: 2000
   },
   {
     id: 'video3',
     title: 'Test Video 3',
     thumbnail: 'https://img.youtube.com/vi/video3/hqdefault.jpg',
     duration: '5:30',
-    description: 'Test description 3',
-    channelTitle: 'Test Channel 3',
-    publishedAt: '2024-01-03T00:00:00Z',
-    viewCount: 3000
   }
 ]
 
@@ -147,7 +135,7 @@ describe('SearchPage E2E Tests', () => {
 
     it('should display loading state during search', async () => {
       // Mock loading state
-      mockUseYouTubeSearch.mockReturnValue(createLoadingQueryResult<VideoDetails[]>())
+      mockUseYouTubeSearch.mockReturnValue(createLoadingQueryResult<VideoDetails[]>() as any)
       
       // Set initial query to trigger loading state
       window.location.search = '?q=test'
@@ -241,8 +229,6 @@ describe('SearchPage E2E Tests', () => {
     })
 
     it('should handle empty search results', async () => {
-      const user = userEvent.setup()
-      
       // Mock empty response
       mockUseYouTubeSearch.mockReturnValue(createSuccessQueryResult<VideoDetails[]>([]))
       

@@ -15,22 +15,45 @@ const getUserIdentifier = () => {
 };
 
 export const useFavorites = () => {
+  const queryClient = useQueryClient();
   const userIdentifier = getUserIdentifier();
   
-  return useQuery({
+  const query = useQuery({
     queryKey: ['favorites', userIdentifier],
     queryFn: () => favoriteService.getFavorites(userIdentifier),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
+
+  const createMutation = useMutation({
+    mutationFn: (params: Omit<FavoriteCreateParams, 'user_identifier'>) => 
+      favoriteService.createFavorite({ ...params, user_identifier: userIdentifier }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites', userIdentifier] });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => favoriteService.deleteFavorite(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites', userIdentifier] });
+    },
+  });
+
+  return {
+    ...query,
+    createMutation,
+    deleteMutation
+  };
 };
 
+// Standalone mutations for when you need them separately
 export const useCreateFavorite = () => {
   const queryClient = useQueryClient();
   const userIdentifier = getUserIdentifier();
 
   return useMutation({
     mutationFn: (params: Omit<FavoriteCreateParams, 'user_identifier'>) => 
-      favoriteService.createFavorite({ ...params, user_identifier }),
+      favoriteService.createFavorite({ ...params, user_identifier: userIdentifier }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['favorites', userIdentifier] });
     },
@@ -55,7 +78,7 @@ export const useToggleFavorite = () => {
 
   return useMutation({
     mutationFn: (params: Omit<FavoriteCreateParams, 'user_identifier'>) => 
-      favoriteService.toggleFavorite({ ...params, user_identifier }),
+      favoriteService.toggleFavorite({ ...params, user_identifier: userIdentifier }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['favorites', userIdentifier] });
     },

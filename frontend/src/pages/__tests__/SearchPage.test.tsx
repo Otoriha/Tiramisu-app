@@ -36,21 +36,13 @@ const mockVideos: VideoDetails[] = [
     id: '1',
     title: 'Test Video 1',
     thumbnail: 'https://example.com/thumb1.jpg',
-    duration: '3:33',
-    description: 'Test description 1',
-    channelTitle: 'Test Channel 1',
-    publishedAt: '2024-01-01T00:00:00Z',
-    viewCount: 1000
+    duration: '3:33'
   },
   {
     id: '2', 
     title: 'Test Video 2',
     thumbnail: 'https://example.com/thumb2.jpg',
-    duration: '4:12',
-    description: 'Test description 2',
-    channelTitle: 'Test Channel 2',
-    publishedAt: '2024-01-02T00:00:00Z',
-    viewCount: 2000
+    duration: '4:12'
   }
 ]
 
@@ -121,7 +113,7 @@ describe('SearchPage', () => {
   })
 
   it('displays skeleton loading state during search', () => {
-    mockUseYouTubeSearch.mockReturnValue(createLoadingQueryResult<VideoDetails[]>())
+    mockUseYouTubeSearch.mockReturnValue(createLoadingQueryResult<VideoDetails[]>() as any)
 
     // Set up initial search query
     window.location.search = '?q=test'
@@ -141,7 +133,9 @@ describe('SearchPage', () => {
   it('displays error state with retry button when search fails', async () => {
     const error = new Error('Search failed')
     const mockRefetch = vi.fn()
-    mockUseYouTubeSearch.mockReturnValue(createErrorQueryResult<VideoDetails[]>(error, { refetch: mockRefetch }))
+    const errorResult = createErrorQueryResult(error)
+    errorResult.refetch = mockRefetch
+    mockUseYouTubeSearch.mockReturnValue(errorResult as any)
 
     const user = userEvent.setup()
     renderSearchPageWithQueryClient()

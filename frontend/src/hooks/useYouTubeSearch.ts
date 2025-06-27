@@ -1,18 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import YouTubeApiWrapper from '../services/youtubeApiFetch';
-
-interface VideoDetails {
-  id: string;
-  title: string;
-  thumbnail: string;
-  duration: string;
-}
-
-interface UseYouTubeSearchOptions {
-  enabled?: boolean;
-  staleTime?: number;
-  retry?: number;
-}
+import type { VideoDetails, UseYouTubeSearchOptions } from '../types/youtube';
 
 const useYouTubeSearch = (
   query: string,
@@ -40,4 +28,3 @@ const useYouTubeSearch = (
 };
 
 export default useYouTubeSearch;
-export type { VideoDetails, UseYouTubeSearchOptions };

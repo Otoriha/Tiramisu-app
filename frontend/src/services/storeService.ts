@@ -3,7 +3,9 @@ import type { Store, StoreSearchParams, ApiResponse } from '../types/api';
 
 export const storeService = {
   async getStores(params?: StoreSearchParams): Promise<ApiResponse<Store[]>> {
-    return apiClient.get<ApiResponse<Store[]>>('/stores', { params });
+    return apiClient.get<ApiResponse<Store[]>>('/stores', { 
+      params: params as Record<string, string | number | undefined>
+    });
   },
 
   async getStore(id: number): Promise<Store> {

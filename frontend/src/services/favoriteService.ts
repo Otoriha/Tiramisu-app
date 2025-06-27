@@ -22,7 +22,7 @@ export const favoriteService = {
       return { favorited: true, favorite };
     } catch (error) {
       // If already favorited, try to find and delete it
-      const favorites = await this.getFavorites(params.user_identifier);
+      const favorites = await this.getFavorites(params.user_identifier || '');
       const existingFavorite = favorites.data.find(
         f => f.favoritable_type === params.favoritable_type && 
             f.favoritable_id === params.favoritable_id
