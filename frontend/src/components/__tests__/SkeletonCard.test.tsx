@@ -1,28 +1,28 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { SkeletonCard } from '../SkeletonCard'
 
 describe('SkeletonCard', () => {
   test('renders without crashing', () => {
-    render(<SkeletonCard />)
+    const { container } = render(<SkeletonCard />)
     
-    const skeletonCard = screen.getByRole('generic')
+    const skeletonCard = container.querySelector('.animate-pulse')
     expect(skeletonCard).toBeInTheDocument()
   })
 
   test('applies animate-pulse class for loading animation', () => {
-    render(<SkeletonCard />)
+    const { container } = render(<SkeletonCard />)
     
-    const skeletonCard = screen.getByRole('generic')
+    const skeletonCard = container.querySelector('.animate-pulse')
     expect(skeletonCard).toHaveClass('animate-pulse')
   })
 
   test('applies custom className when provided', () => {
     const customClass = 'custom-skeleton'
-    render(<SkeletonCard className={customClass} />)
+    const { container } = render(<SkeletonCard className={customClass} />)
     
-    const skeletonCard = screen.getByRole('generic')
+    const skeletonCard = container.querySelector('.animate-pulse')
     expect(skeletonCard).toHaveClass(customClass)
   })
 
