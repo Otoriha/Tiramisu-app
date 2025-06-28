@@ -162,7 +162,7 @@ const HomePage: React.FC = () => {
                   className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
                 >
                   <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                    {recipe.name}
+                    {recipe.title}
                   </h3>
                   <p className="text-gray-600 text-sm mb-3 line-clamp-2">
                     {recipe.description}
@@ -179,7 +179,7 @@ const HomePage: React.FC = () => {
                         recipe.difficulty === 'medium' ? '普通' : 
                         recipe.difficulty === 'hard' ? '本格派' : '')}
                     </span>
-                    <span>🕒 {recipe.duration || recipe.cooking_time}分</span>
+                    <span>🕒 {recipe.duration}分</span>
                   </div>
                 </Link>
               ))}

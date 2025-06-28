@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useRecipe, useIncrementRecipeView, useRecipes } from '../hooks/useRecipes'
 import { useFavorites } from '../hooks/useFavorites'
-import { favoriteService } from '../services/favoriteService'
 
 const RecipeDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -142,10 +141,10 @@ const RecipeDetailPage: React.FC = () => {
     } catch (error) {
       console.error('🧪 APIテストエラー詳細:', {
         error,
-        message: error.message,
-        stack: error.stack
+        message: (error as Error).message,
+        stack: (error as Error).stack
       })
-      alert(`APIテストエラー: ${error.message}`)
+      alert(`APIテストエラー: ${(error as Error).message}`)
     }
   }
 
@@ -313,7 +312,7 @@ const RecipeDetailPage: React.FC = () => {
                     const data = await res.json()
                     alert(`レシピ取得成功: ${data.data?.length || 0}件`)
                   } catch (e) {
-                    alert(`レシピ取得エラー: ${e.message}`)
+                    alert(`レシピ取得エラー: ${(e as Error).message}`)
                   }
                 }}
                 className="mt-2 px-3 py-1 bg-yellow-500 text-white rounded text-xs"

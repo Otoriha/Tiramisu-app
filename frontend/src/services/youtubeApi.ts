@@ -83,3 +83,6 @@ class YouTubeApiWrapper {
 }
 
 export default YouTubeApiWrapper;
+
+// 名前付きエクスポートも追加
+export const youtubeApi = new YouTubeApiWrapper();

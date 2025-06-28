@@ -40,12 +40,16 @@ export interface Store {
   id: number;
   name: string;
   address: string;
-  phone: string;
-  business_hours: string;
+  phone?: string;
+  business_hours?: string;
   google_maps_url?: string;
   latitude: number;
   longitude: number;
   distance?: number;
+  rating?: number;
+  review_count?: number;
+  price_level?: number;
+  google_place_id?: string;
   created_at: string;
   updated_at: string;
 }
