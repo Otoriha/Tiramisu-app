@@ -125,7 +125,7 @@ const SearchPage: React.FC = () => {
           {!isLoading && !error && videoCards.length > 0 && (
             <div>
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                「{searchQuery}」の検索結果 ({videoCards.length}件)
+                「{searchQuery}」の検索結果
               </h2>
               <VideoGrid
                 videos={videoCards}
