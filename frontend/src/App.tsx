@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Layout } from './components'
 import HomePage from './pages/HomePage'
 import SearchPage from './pages/SearchPage'
+import RecipeSearchPage from './pages/RecipeSearchPage'
 import RecipeDetailPage from './pages/RecipeDetailPage'
 import StoreMapPage from './pages/StoreMapPage'
 import FavoritesPage from './pages/FavoritesPage'
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="search" element={<SearchPage />} />
+          <Route path="recipes" element={<RecipeSearchPage />} />
           <Route path="recipes/:id" element={<RecipeDetailPage />} />
           <Route path="stores" element={<StoreMapPage />} />
           <Route path="favorites" element={<FavoritesPage />} />

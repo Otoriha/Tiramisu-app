@@ -29,7 +29,7 @@ const HomePage: React.FC = () => {
 
   // レシピ検索ハンドラー
   const handleRecipeSearch = (query: string) => {
-    navigate(`/search?q=${encodeURIComponent(query)}`)
+    navigate(`/recipes?q=${encodeURIComponent(query)}`)
   }
 
   // 位置情報を取得

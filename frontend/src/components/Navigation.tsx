@@ -1,13 +1,14 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Home, Search, MapPin, Heart } from 'lucide-react'
+import { Home, Search, BookOpen, MapPin, Heart } from 'lucide-react'
 
 const Navigation: React.FC = () => {
   const location = useLocation()
 
   const navItems = [
     { path: '/', label: 'ホーム', icon: Home },
-    { path: '/search', label: '検索', icon: Search },
+    { path: '/search', label: '動画検索', icon: Search },
+    { path: '/recipes', label: 'レシピ', icon: BookOpen },
     { path: '/stores', label: '店舗', icon: MapPin },
     { path: '/favorites', label: 'お気に入り', icon: Heart },
   ]
