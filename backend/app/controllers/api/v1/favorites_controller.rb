@@ -2,7 +2,7 @@ module Api
   module V1
     class FavoritesController < BaseController
       before_action :require_user_identifier
-      before_action :set_favoritable, only: [:create, :destroy]
+      before_action :set_favoritable, only: [:create]
 
       # GET /api/v1/favorites
       def index
@@ -88,8 +88,10 @@ module Api
             title: favoritable.title,
             thumbnail_url: favoritable.thumbnail_url,
             duration: favoritable.duration,
+            difficulty: favoritable.difficulty,
             difficulty_label: favoritable.difficulty_label,
-            category_label: favoritable.category_label
+            category_label: favoritable.category_label,
+            description: favoritable.description
           }
         when Store
           {

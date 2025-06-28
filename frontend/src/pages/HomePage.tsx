@@ -168,12 +168,18 @@ const HomePage: React.FC = () => {
                     {recipe.description}
                   </p>
                   <div className="flex justify-between items-center text-sm text-gray-500">
-                    <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded">
-                      {recipe.difficulty === 'easy' ? '簡単' :
-                       recipe.difficulty === 'medium' ? '普通' : '難しい'}
+                    <span className={`px-2 py-1 rounded ${
+                      recipe.difficulty === 'easy' ? 'bg-green-100 text-green-700' :
+                      recipe.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                      recipe.difficulty === 'hard' ? 'bg-red-100 text-red-700' :
+                      'bg-gray-100 text-gray-700'
+                    }`}>
+                      {recipe.difficulty_label || 
+                       (recipe.difficulty === 'easy' ? '簡単' :
+                        recipe.difficulty === 'medium' ? '普通' : 
+                        recipe.difficulty === 'hard' ? '本格派' : '')}
                     </span>
-                    <span>{recipe.cooking_time}分</span>
-                    <span>👁 {recipe.views_count}</span>
+                    <span>🕒 {recipe.duration || recipe.cooking_time}分</span>
                   </div>
                 </Link>
               ))}
