@@ -330,7 +330,7 @@ DEPENDENCIES
   factory_bot_rails (~> 6.4)
   faker (~> 3.3)
   foreman
-  httparty (~> 0.21)
+  httparty (~> 0.23)
   jbuilder (~> 2.11)
   jwt (~> 2.7)
   kaminari (~> 1.2)
