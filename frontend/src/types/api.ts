@@ -88,6 +88,10 @@ export interface RecipeSearchParams {
   q?: string;
   difficulty?: 'easy' | 'medium' | 'hard';
   cooking_time?: number;
+  cooking_time_max?: number; // 調理時間上限フィルター
+  category?: string; // カテゴリーフィルター（クラシック、アレンジ、ヴィーガン等）
+  ingredients_include?: string[]; // 含む材料
+  ingredients_exclude?: string[]; // 除外する材料
   page?: number;
   per_page?: number;
 }
