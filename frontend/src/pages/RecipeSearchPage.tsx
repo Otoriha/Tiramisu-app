@@ -61,7 +61,7 @@ const RecipeSearchPage: React.FC = () => {
   // レシピを取得
   const { data: recipesResponse, isLoading, error, refetch } = useRecipes({
     ...urlParams,
-    per_page: 12
+    per_page: 50 // すべてのレシピを表示
   })
 
   const recipes = recipesResponse?.data || []
