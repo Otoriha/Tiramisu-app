@@ -33,7 +33,7 @@ export const useFavorites = () => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => favoriteService.deleteFavorite(id),
+    mutationFn: (id: number) => favoriteService.deleteFavorite(id, userIdentifier),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['favorites', userIdentifier] });
     },
@@ -65,7 +65,7 @@ export const useDeleteFavorite = () => {
   const userIdentifier = getUserIdentifier();
 
   return useMutation({
-    mutationFn: (id: number) => favoriteService.deleteFavorite(id),
+    mutationFn: (id: number) => favoriteService.deleteFavorite(id, userIdentifier),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['favorites', userIdentifier] });
     },

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useRecipe, useIncrementRecipeView, useRecipes } from '../hooks/useRecipes'
 import { useFavorites } from '../hooks/useFavorites'
+import { favoriteService } from '../services/favoriteService'
 
 const RecipeDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -11,6 +12,7 @@ const RecipeDetailPage: React.FC = () => {
 
   // レシピデータを取得
   const { data: recipe, isLoading, error } = useRecipe(recipeId)
+  
   
   // 関連レシピを取得（同じカテゴリーまたは難易度）
   const { data: relatedRecipesResponse } = useRecipes({
@@ -26,7 +28,9 @@ const RecipeDetailPage: React.FC = () => {
   const { 
     data: favoritesResponse, 
     createMutation, 
-    deleteMutation 
+    deleteMutation,
+    isLoading: favoritesLoading,
+    error: favoritesError
   } = useFavorites()
   
   const favorites = favoritesResponse?.data || []
@@ -37,6 +41,28 @@ const RecipeDetailPage: React.FC = () => {
     fav => fav.favoritable_type === 'Recipe' && fav.favoritable_id === recipeId
   )
   
+  // デバッグ: お気に入りデータの状況をログ出力
+  useEffect(() => {
+    console.log('💖 お気に入りデータ状況:', {
+      favoritesResponse,
+      favorites,
+      favoritesCount: favorites.length,
+      isFavorited,
+      favoriteItem,
+      favoritesLoading,
+      favoritesError,
+      recipeId,
+      mutations: {
+        createPending: createMutation.isPending,
+        createSuccess: createMutation.isSuccess,
+        createError: createMutation.error,
+        deletePending: deleteMutation.isPending,
+        deleteSuccess: deleteMutation.isSuccess,
+        deleteError: deleteMutation.error
+      }
+    })
+  }, [favoritesResponse, favorites, isFavorited, favoriteItem, favoritesLoading, favoritesError, recipeId, createMutation, deleteMutation])
+  
   // 関連レシピ（現在のレシピを除外）
   const relatedRecipes = relatedRecipesResponse?.data?.filter(r => r.id !== recipeId).slice(0, 3) || []
 
@@ -45,17 +71,81 @@ const RecipeDetailPage: React.FC = () => {
     if (recipe && recipeId) {
       incrementViewMutation.mutate(recipeId)
     }
-  }, [recipe, recipeId, incrementViewMutation])
+  }, [recipeId]) // incrementViewMutationを依存配列から削除
 
   // お気に入りトグル
   const handleFavoriteToggle = () => {
+    console.log('🔄 お気に入りボタンクリック:', {
+      isFavorited,
+      favoriteItem,
+      recipeId,
+      favoritesCount: favorites.length,
+      favoritesData: favorites
+    })
+    
     if (isFavorited && favoriteItem) {
-      deleteMutation.mutate(favoriteItem.id)
+      console.log('🗑️ お気に入り削除実行:', favoriteItem.id)
+      deleteMutation.mutate(favoriteItem.id, {
+        onSuccess: (data) => {
+          console.log('✅ お気に入り削除成功:', data)
+        },
+        onError: (error) => {
+          console.error('❌ お気に入り削除エラー:', error)
+        }
+      })
     } else {
-      createMutation.mutate({
+      console.log('➕ お気に入り追加実行:', {
         favoritable_type: 'Recipe',
         favoritable_id: recipeId
       })
+      createMutation.mutate({
+        favoritable_type: 'Recipe',
+        favoritable_id: recipeId
+      }, {
+        onSuccess: (data) => {
+          console.log('✅ お気に入り追加成功:', data)
+        },
+        onError: (error) => {
+          console.error('❌ お気に入り追加エラー:', error)
+        }
+      })
+    }
+  }
+
+  // APIテスト関数
+  const testFavoriteAPI = async () => {
+    console.log('🧪 お気に入りAPIテスト開始')
+    const baseUrl = import.meta.env.VITE_API_BASE_URL || '/api/v1'
+    console.log('🔍 API_BASE_URL:', baseUrl)
+    console.log('🔍 完全なURL:', `${window.location.origin}${baseUrl}/favorites`)
+    
+    try {
+      const userIdentifier = localStorage.getItem('user_identifier') || 'test_user'
+      console.log('🔍 userIdentifier:', userIdentifier)
+      console.log('🔍 recipeId:', recipeId)
+      
+      // 直接fetchで試す
+      const response = await fetch(`${baseUrl}/favorites`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recipe_id: recipeId,
+          user_identifier: userIdentifier
+        })
+      })
+      
+      console.log('🔍 Response status:', response.status)
+      const data = await response.json()
+      console.log('🧪 APIテスト結果:', data)
+      alert(`APIテスト成功: ${JSON.stringify(data)}`)
+      
+    } catch (error) {
+      console.error('🧪 APIテストエラー詳細:', {
+        error,
+        message: error.message,
+        stack: error.stack
+      })
+      alert(`APIテストエラー: ${error.message}`)
     }
   }
 
@@ -188,6 +278,50 @@ const RecipeDetailPage: React.FC = () => {
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           {/* ヘッダー */}
           <div className="p-6 border-b">
+            {/* デバッグ表示 */}
+            <div className="bg-blue-50 p-3 mb-4 text-xs border rounded">
+              <strong>お気に入り状況:</strong><br/>
+              お気に入り登録済み: {isFavorited ? 'はい' : 'いいえ'}<br/>
+              お気に入り総数: {favorites.length}<br/>
+              loading: {favoritesLoading ? 'はい' : 'いいえ'}<br/>
+              error: {favoritesError ? 'あり' : 'なし'}<br/>
+              mutation pending: {(createMutation.isPending || deleteMutation.isPending) ? 'はい' : 'いいえ'}<br/>
+              create success: {createMutation.isSuccess ? 'はい' : 'いいえ'}<br/>
+              delete success: {deleteMutation.isSuccess ? 'はい' : 'いいえ'}<br/>
+              mutation errors: {createMutation.error || deleteMutation.error ? 'あり' : 'なし'}<br/>
+              <hr className="my-2" />
+              <strong>API設定:</strong><br/>
+              API_BASE_URL: {import.meta.env.VITE_API_BASE_URL || '/api/v1'}<br/>
+              現在のURL: {window.location.origin}<br/>
+              完全なAPIパス: {window.location.origin}{import.meta.env.VITE_API_BASE_URL || '/api/v1'}/favorites<br/>
+              <button 
+                onClick={() => alert('テストボタンが動作しました！')}
+                className="mt-2 px-3 py-1 bg-green-500 text-white rounded text-xs mr-2"
+              >
+                テストボタン
+              </button>
+              <button 
+                onClick={testFavoriteAPI}
+                className="mt-2 px-3 py-1 bg-purple-500 text-white rounded text-xs mr-2"
+              >
+                APIテスト
+              </button>
+              <button 
+                onClick={async () => {
+                  try {
+                    const res = await fetch('/api/v1/recipes')
+                    const data = await res.json()
+                    alert(`レシピ取得成功: ${data.data?.length || 0}件`)
+                  } catch (e) {
+                    alert(`レシピ取得エラー: ${e.message}`)
+                  }
+                }}
+                className="mt-2 px-3 py-1 bg-yellow-500 text-white rounded text-xs"
+              >
+                レシピ取得テスト
+              </button>
+            </div>
+            
             <div className="flex justify-between items-start">
               <div className="flex-1">
                 <h1 className="text-3xl font-bold text-gray-800 mb-2">
@@ -200,10 +334,13 @@ const RecipeDetailPage: React.FC = () => {
                   <span className={`px-3 py-1 rounded-full ${
                     recipe.difficulty === 'easy' ? 'bg-green-100 text-green-700' :
                     recipe.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                    'bg-red-100 text-red-700'
+                    recipe.difficulty === 'hard' ? 'bg-red-100 text-red-700' :
+                    'bg-gray-100 text-gray-700'
                   }`}>
-                    {recipe.difficulty === 'easy' ? '簡単' :
-                     recipe.difficulty === 'medium' ? '普通' : '難しい'}
+                    {recipe.difficulty_label || 
+                     (recipe.difficulty === 'easy' ? '簡単' :
+                      recipe.difficulty === 'medium' ? '普通' : 
+                      recipe.difficulty === 'hard' ? '本格派' : '')}
                   </span>
                   <span>🕒 {recipe.duration}分</span>
                 </div>
@@ -217,7 +354,11 @@ const RecipeDetailPage: React.FC = () => {
                   📤
                 </button>
                 <button
-                  onClick={handleFavoriteToggle}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    console.log('🖱️ ボタンクリック検出！');
+                    handleFavoriteToggle();
+                  }}
                   disabled={createMutation.isPending || deleteMutation.isPending}
                   className={`p-2 rounded-full transition-colors ${
                     isFavorited 
@@ -227,6 +368,9 @@ const RecipeDetailPage: React.FC = () => {
                   title={isFavorited ? 'お気に入りから削除' : 'お気に入りに追加'}
                 >
                   {isFavorited ? '♥' : '♡'}
+                  {(createMutation.isPending || deleteMutation.isPending) && (
+                    <span className="ml-1 text-xs">...</span>
+                  )}
                 </button>
               </div>
             </div>
@@ -251,14 +395,20 @@ const RecipeDetailPage: React.FC = () => {
           {/* 材料 */}
           <div className="p-6 border-b">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">材料</h2>
-            <ul className="space-y-2">
-              {recipe.ingredients.map((ingredient, index) => (
-                <li key={index} className="flex items-center">
-                  <span className="w-2 h-2 bg-blue-600 rounded-full mr-3"></span>
-                  {ingredient}
-                </li>
-              ))}
-            </ul>
+            {recipe.ingredients && Array.isArray(recipe.ingredients) && recipe.ingredients.length > 0 ? (
+              <ul className="space-y-2">
+                {recipe.ingredients.map((ingredient, index) => (
+                  <li key={index} className="flex items-center">
+                    <span className="w-2 h-2 bg-blue-600 rounded-full mr-3"></span>
+                    <span className="text-gray-700">{ingredient}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="text-gray-500 italic">
+                材料情報が登録されていません
+              </div>
+            )}
           </div>
 
           {/* 作り方 */}
@@ -300,10 +450,13 @@ const RecipeDetailPage: React.FC = () => {
                     <span className={`px-2 py-1 rounded text-xs font-medium ${
                       relatedRecipe.difficulty === 'easy' ? 'bg-green-100 text-green-700' :
                       relatedRecipe.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                      'bg-red-100 text-red-700'
+                      relatedRecipe.difficulty === 'hard' ? 'bg-red-100 text-red-700' :
+                      'bg-gray-100 text-gray-700'
                     }`}>
-                      {relatedRecipe.difficulty === 'easy' ? '簡単' :
-                       relatedRecipe.difficulty === 'medium' ? '普通' : '難しい'}
+                      {relatedRecipe.difficulty_label || 
+                       (relatedRecipe.difficulty === 'easy' ? '簡単' :
+                        relatedRecipe.difficulty === 'medium' ? '普通' : 
+                        relatedRecipe.difficulty === 'hard' ? '本格派' : '')}
                     </span>
                     <div className="flex items-center space-x-2 text-gray-500">
                       <span>🕒 {relatedRecipe.duration}分</span>
