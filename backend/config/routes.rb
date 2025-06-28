@@ -14,9 +14,10 @@ Rails.application.routes.draw do
       get '/auth/me', to: 'auth#me'
       post '/auth/refresh', to: 'auth#refresh'
 
-      resources :recipes, only: [:index, :show] do
+      resources :recipes do
         collection do
           get :search
+          post :bulk_import
         end
         member do
           post :increment_view

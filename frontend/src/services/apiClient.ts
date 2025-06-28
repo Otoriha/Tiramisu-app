@@ -24,7 +24,16 @@ export const apiClient = {
     const { params, ...fetchOptions } = options;
 
     // Build URL with query parameters
-    const url = new URL(`${API_BASE_URL}${endpoint}`);
+    let fullUrl: string;
+    if (API_BASE_URL.startsWith('http')) {
+      // 絶対URL
+      fullUrl = `${API_BASE_URL}${endpoint}`;
+    } else {
+      // 相対URL（プロキシ経由）
+      fullUrl = `${window.location.origin}${API_BASE_URL}${endpoint}`;
+    }
+    
+    const url = new URL(fullUrl);
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined) {

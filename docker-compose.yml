@@ -29,7 +29,7 @@ services:
       - ./frontend:/usr/src/app
       - frontend_node_modules:/usr/src/app/node_modules   # node_modules をホストに汚さない
     environment:
-      - VITE_API_BASE_URL=http://localhost:3000/api/v1  # ブラウザからはlocalhostでアクセス
+      - VITE_API_BASE_URL=/api/v1  # Viteプロキシ経由でアクセス
       - VITE_HOST=0.0.0.0
       - VITE_PORT=5173
     ports:

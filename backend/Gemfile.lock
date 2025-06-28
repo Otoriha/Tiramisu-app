@@ -94,6 +94,7 @@ GEM
     concurrent-ruby (1.3.5)
     connection_pool (2.5.3)
     crass (1.0.6)
+    csv (3.3.5)
     database_cleaner-active_record (2.2.1)
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
@@ -118,6 +119,10 @@ GEM
     foreman (0.88.1)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    httparty (0.23.1)
+      csv
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     io-console (0.8.0)
@@ -162,6 +167,8 @@ GEM
     mini_mime (1.1.5)
     minitest (5.25.5)
     msgpack (1.8.0)
+    multi_xml (0.7.2)
+      bigdecimal (~> 3.1)
     net-imap (0.5.9)
       date
       net-protocol
@@ -323,10 +330,12 @@ DEPENDENCIES
   factory_bot_rails (~> 6.4)
   faker (~> 3.3)
   foreman
+  httparty (~> 0.21)
   jbuilder (~> 2.11)
   jwt (~> 2.7)
   kaminari (~> 1.2)
   listen (~> 3.7)
+  nokogiri (~> 1.16)
   pg (>= 1.5, < 3.0)
   puma (~> 6.4)
   rack-cors (~> 2.0)
