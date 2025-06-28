@@ -17,16 +17,22 @@ export interface ApiError {
 // Recipe Types
 export interface Recipe {
   id: number;
-  name: string;
+  title: string;
   description: string;
+  thumbnail_url?: string;
   video_url: string;
-  views_count: number;
+  view_count: number;
   difficulty: 'easy' | 'medium' | 'hard';
-  cooking_time: number;
+  difficulty_label: string;
+  duration: number;
+  category: string;
+  category_label: string;
   ingredients: string[];
   instructions: string[];
+  published_at: string;
   created_at: string;
   updated_at: string;
+  favorited: boolean;
 }
 
 // Store Types
@@ -87,8 +93,7 @@ export interface RegisterParams {
 export interface RecipeSearchParams {
   q?: string;
   difficulty?: 'easy' | 'medium' | 'hard';
-  cooking_time?: number;
-  cooking_time_max?: number; // 調理時間上限フィルター
+  max_duration?: number; // 調理時間上限フィルター
   category?: string; // カテゴリーフィルター（クラシック、アレンジ、ヴィーガン等）
   ingredients_include?: string[]; // 含む材料
   ingredients_exclude?: string[]; // 除外する材料

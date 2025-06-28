@@ -107,9 +107,9 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
               ].map(({ value, label }) => (
                 <button
                   key={label}
-                  onClick={() => handleFilterChange('cooking_time_max', value)}
+                  onClick={() => handleFilterChange('max_duration', value)}
                   className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                    filters.cooking_time_max === value
+                    filters.max_duration === value
                       ? 'bg-green-600 text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}

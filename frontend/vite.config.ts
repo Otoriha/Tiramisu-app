@@ -12,6 +12,12 @@ export default defineConfig({
     watch: {
       usePolling: true, // Docker/WSLでファイル変更を検知
     },
+    proxy: {
+      '/api': {
+        target: 'http://backend:3000',
+        changeOrigin: true,
+      },
+    },
   },
   resolve: {
     alias: {

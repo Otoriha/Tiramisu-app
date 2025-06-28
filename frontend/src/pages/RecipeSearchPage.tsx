@@ -16,7 +16,7 @@ const RecipeSearchPage: React.FC = () => {
     
     if (params.get('q')) initialParams.q = params.get('q')!
     if (params.get('difficulty')) initialParams.difficulty = params.get('difficulty') as 'easy' | 'medium' | 'hard'
-    if (params.get('cooking_time_max')) initialParams.cooking_time_max = Number(params.get('cooking_time_max'))
+    if (params.get('max_duration')) initialParams.max_duration = Number(params.get('max_duration'))
     if (params.get('category')) initialParams.category = params.get('category')!
     if (params.get('ingredients_include')) {
       initialParams.ingredients_include = params.get('ingredients_include')!.split(',')
@@ -82,7 +82,7 @@ const RecipeSearchPage: React.FC = () => {
       className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow group"
     >
       <h3 className="text-lg font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
-        {recipe.name}
+        {recipe.title}
       </h3>
       <p className="text-gray-600 text-sm mb-3 line-clamp-2">
         {recipe.description}
@@ -97,8 +97,7 @@ const RecipeSearchPage: React.FC = () => {
            recipe.difficulty === 'medium' ? '普通' : '本格派'}
         </span>
         <div className="flex items-center space-x-3 text-gray-500">
-          <span>🕒 {recipe.cooking_time}分</span>
-          <span>👁 {recipe.views_count}</span>
+          <span>🕒 {recipe.duration}分</span>
         </div>
       </div>
     </Link>
@@ -138,6 +137,14 @@ const RecipeSearchPage: React.FC = () => {
                 <div className="mb-4">
                   <h3 className="text-lg font-semibold mb-2">エラーが発生しました</h3>
                   <p className="text-sm">レシピの読み込み中にエラーが発生しました。</p>
+                  {error && (
+                    <details className="mt-2 text-xs">
+                      <summary className="cursor-pointer">エラー詳細</summary>
+                      <pre className="mt-2 p-2 bg-gray-100 rounded text-left overflow-auto">
+                        {error instanceof Error ? error.message : JSON.stringify(error, null, 2)}
+                      </pre>
+                    </details>
+                  )}
                 </div>
                 <button
                   onClick={() => refetch()}
@@ -195,7 +202,7 @@ const RecipeSearchPage: React.FC = () => {
           )}
 
           {/* 検索結果 */}
-          {!isLoading && !error && recipes.length > 0 && (
+          {!isLoading && !error && recipes.length > 0 && (searchQuery || Object.keys(filters).length > 0) && (
             <div>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-semibold text-gray-800">
@@ -220,8 +227,23 @@ const RecipeSearchPage: React.FC = () => {
             </div>
           )}
 
-          {/* 初期状態 */}
-          {!searchQuery && Object.keys(filters).length === 0 && !isLoading && (
+          {/* 初期状態でも全レシピを表示 */}
+          {!searchQuery && Object.keys(filters).length === 0 && !isLoading && !error && recipes.length > 0 && (
+            <div>
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-gray-800">
+                  すべてのティラミスレシピ ({totalCount}件)
+                </h2>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {recipes.map(renderRecipeCard)}
+              </div>
+            </div>
+          )}
+
+          {/* 検索・フィルター案内（レシピがない場合のみ） */}
+          {!searchQuery && Object.keys(filters).length === 0 && !isLoading && !error && recipes.length === 0 && (
             <div className="text-center py-12">
               <div className="mb-8">
                 <span className="text-6xl mb-4 block">🍰</span>

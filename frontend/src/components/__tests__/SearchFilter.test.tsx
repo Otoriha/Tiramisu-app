@@ -66,7 +66,7 @@ describe('SearchFilter', () => {
     fireEvent.click(thirtyMinButton)
     
     expect(mockOnFilterChange).toHaveBeenCalledWith({
-      cooking_time_max: 30
+      max_duration: 30
     })
   })
 
@@ -132,7 +132,7 @@ describe('SearchFilter', () => {
   it('should reset all filters when reset button is clicked', async () => {
     const initialFilters: Partial<RecipeSearchParams> = {
       difficulty: 'easy',
-      cooking_time_max: 30,
+      max_duration: 30,
       category: 'classic'
     }
     

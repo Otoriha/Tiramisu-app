@@ -52,10 +52,9 @@ module Api
       # ページネーション用のメタデータを生成
       def pagination_meta(collection)
         {
-          current_page: collection.current_page,
-          total_pages: collection.total_pages,
-          total_count: collection.total_count,
-          per_page: collection.limit_value
+          page: collection.current_page,
+          per_page: collection.limit_value,
+          total: collection.total_count
         }
       end
 

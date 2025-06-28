@@ -1,7 +1,7 @@
 module Api
   module V1
     class RecipesController < BaseController
-      before_action :set_recipe, only: [:show]
+      before_action :set_recipe, only: [:show, :update, :destroy, :increment_view]
 
       # GET /api/v1/recipes
       def index
@@ -10,19 +10,14 @@ module Api
         @recipes = @recipes.page(params[:page]).per(params[:per_page] || 12)
 
         render json: {
-          recipes: serialize_recipes(@recipes),
+          data: serialize_recipes(@recipes),
           meta: pagination_meta(@recipes)
         }
       end
 
       # GET /api/v1/recipes/:id
       def show
-        # 閲覧数をインクリメント
-        @recipe.increment_view_count!
-
-        render json: {
-          recipe: serialize_recipe(@recipe)
-        }
+        render json: serialize_recipe(@recipe)
       end
 
       # GET /api/v1/recipes/search
@@ -38,10 +33,72 @@ module Api
         @recipes = @recipes.page(params[:page]).per(params[:per_page] || 12)
 
         render json: {
-          recipes: serialize_recipes(@recipes),
+          data: serialize_recipes(@recipes),
           meta: pagination_meta(@recipes),
           query: query
         }
+      end
+
+      # POST /api/v1/recipes
+      def create
+        @recipe = Recipe.new(recipe_params)
+        
+        if @recipe.save
+          render json: serialize_recipe(@recipe), status: :created
+        else
+          render_error(@recipe.errors.full_messages.join(', '), :unprocessable_entity)
+        end
+      end
+
+      # PUT /api/v1/recipes/:id
+      def update
+        if @recipe.update(recipe_params)
+          render json: serialize_recipe(@recipe)
+        else
+          render_error(@recipe.errors.full_messages.join(', '), :unprocessable_entity)
+        end
+      end
+
+      # DELETE /api/v1/recipes/:id
+      def destroy
+        @recipe.destroy
+        head :no_content
+      end
+
+      # POST /api/v1/recipes/bulk_import
+      def bulk_import
+        recipes_data = params[:recipes]
+        
+        if recipes_data.blank?
+          return render_error('レシピデータが必要です', :bad_request)
+        end
+
+        created_recipes = []
+        errors = []
+
+        recipes_data.each_with_index do |recipe_data, index|
+          recipe = Recipe.new(recipe_data.permit(recipe_param_keys))
+          
+          if recipe.save
+            created_recipes << recipe
+          else
+            errors << "Recipe #{index + 1}: #{recipe.errors.full_messages.join(', ')}"
+          end
+        end
+
+        render json: {
+          success: true,
+          created_count: created_recipes.length,
+          total_count: recipes_data.length,
+          errors: errors,
+          data: serialize_recipes(created_recipes)
+        }
+      end
+
+      # POST /api/v1/recipes/:id/increment_view
+      def increment_view
+        @recipe.increment_view_count!
+        render json: serialize_recipe(@recipe)
       end
 
       private
@@ -110,6 +167,18 @@ module Api
         return false unless params[:user_identifier].present?
         
         Favorite.favorited?(params[:user_identifier], recipe)
+      end
+
+      def recipe_params
+        params.require(:recipe).permit(recipe_param_keys)
+      end
+
+      def recipe_param_keys
+        [
+          :title, :description, :thumbnail_url, :video_url, :duration,
+          :difficulty, :category, :source_type, :source_id, :published_at,
+          ingredients: [], instructions: []
+        ]
       end
     end
   end
