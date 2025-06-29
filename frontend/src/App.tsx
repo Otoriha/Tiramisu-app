@@ -7,6 +7,8 @@ import RecipeSearchPage from './pages/RecipeSearchPage'
 import RecipeDetailPage from './pages/RecipeDetailPage'
 import StoreMapPage from './pages/StoreMapPage'
 import FavoritesPage from './pages/FavoritesPage'
+import About from './pages/About'
+import Contact from './pages/Contact'
 // import AdminPage from './pages/AdminPage'
 import NotFoundPage from './pages/NotFoundPage'
 
@@ -20,6 +22,8 @@ function App() {
           <Route path="recipes" element={<RecipeSearchPage />} />
           <Route path="recipes/:id" element={<RecipeDetailPage />} />
           <Route path="stores" element={<StoreMapPage />} />
+          <Route path="about" element={<About />} />
+          <Route path="contact" element={<Contact />} />
           <Route path="favorites" element={<FavoritesPage />} />
           {/* <Route path="admin" element={<AdminPage />} /> */}
           <Route path="*" element={<NotFoundPage />} />
