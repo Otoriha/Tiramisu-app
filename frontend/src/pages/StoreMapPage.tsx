@@ -215,10 +215,12 @@ const StoreMapPage: React.FC = () => {
                   </h3>
                   
                   <div className="space-y-3 mb-6">
-                    <div className="flex items-start">
-                      <span className="mr-3 mt-1">📍</span>
-                      <span className="text-gray-700">{selectedStore.address}</span>
-                    </div>
+                    {selectedStore.address && (
+                      <div className="flex items-start">
+                        <span className="mr-3 mt-1">📍</span>
+                        <span className="text-gray-700">{selectedStore.address}</span>
+                      </div>
+                    )}
                     
                     {(selectedStore.phone_number || selectedStore.phone) && (
                       <div className="flex items-center">
@@ -345,10 +347,12 @@ const StoreMapPage: React.FC = () => {
                               </h3>
                               
                               <div className="text-sm text-gray-600 space-y-1">
-                                <p className="flex items-center">
-                                  <span className="mr-2">📍</span>
-                                  {store.address}
-                                </p>
+                                {store.address && (
+                                  <p className="flex items-center">
+                                    <span className="mr-2">📍</span>
+                                    {store.address}
+                                  </p>
+                                )}
                                 
                                 {store.rating && (
                                   <p className="flex items-center">

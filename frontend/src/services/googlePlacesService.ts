@@ -141,10 +141,10 @@ class GooglePlacesService {
 
   // PlaceResultをStore型に変換
   convertToStore(place: PlaceResult): any {
-    return {
+    const store = {
       id: place.place_id, // 一時的にplace_idを使用
       name: place.name,
-      address: place.formatted_address || '',
+      address: place.formatted_address || '住所情報なし',
       latitude: place.geometry.location.lat(),
       longitude: place.geometry.location.lng(),
       phone_number: place.formatted_phone_number,
@@ -157,6 +157,14 @@ class GooglePlacesService {
       has_tiramisu: true, // ティラミス関連で検索したので
       photo_url: place.photos?.[0]?.getUrl({ maxWidth: 400 })
     };
+    
+    console.log('🏪 Store変換:', {
+      name: store.name,
+      address: store.address,
+      original_address: place.formatted_address
+    });
+    
+    return store;
   }
 }
 
