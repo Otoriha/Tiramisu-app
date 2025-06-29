@@ -6,6 +6,15 @@ export { SkeletonCard } from './SkeletonCard'
 export { default as Navigation } from './Navigation'
 export { default as Layout } from './Layout'
 export { default as GoogleMap } from './GoogleMap'
+
+// UI Components
+export { default as OptimizedImage } from './ui/OptimizedImage'
+export { default as HeroSection } from './ui/HeroSection'
+export { default as ProductCard } from './ui/ProductCard'
+export { Button } from './ui/button'
+export { Input } from './ui/input'
+export { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription } from './ui/Card'
+
 export type { SearchInputProps } from './SearchInput'
 export type { SearchFilterProps } from './SearchFilter'
 export type { VideoCardProps } from './VideoCard'
