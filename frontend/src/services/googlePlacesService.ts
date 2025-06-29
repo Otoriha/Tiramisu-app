@@ -2,7 +2,8 @@
 export interface PlaceResult {
   place_id: string;
   name: string;
-  formatted_address: string;
+  formatted_address?: string;
+  vicinity?: string; // nearbySearchで取得できる簡易住所
   geometry: {
     location: {
       lat: () => number;
@@ -144,7 +145,7 @@ class GooglePlacesService {
     const store = {
       id: place.place_id, // 一時的にplace_idを使用
       name: place.name,
-      address: place.formatted_address || '住所情報なし',
+      address: place.formatted_address || place.vicinity || '住所情報なし',
       latitude: place.geometry.location.lat(),
       longitude: place.geometry.location.lng(),
       phone_number: place.formatted_phone_number,
@@ -161,7 +162,8 @@ class GooglePlacesService {
     console.log('🏪 Store変換:', {
       name: store.name,
       address: store.address,
-      original_address: place.formatted_address
+      formatted_address: place.formatted_address,
+      vicinity: place.vicinity
     });
     
     return store;

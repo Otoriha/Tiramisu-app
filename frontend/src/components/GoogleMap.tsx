@@ -168,14 +168,12 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           title: store.name,
           icon: {
             url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-              <svg width="28" height="40" viewBox="0 0 28 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M14 0C6.268 0 0 6.268 0 14c0 10.5 14 26 14 26s14-15.5 14-26C28 6.268 21.732 0 14 0z" fill="#DC2626" stroke="white" stroke-width="2"/>
-                <circle cx="14" cy="14" r="8" fill="white"/>
-                <text x="14" y="18" text-anchor="middle" fill="#DC2626" font-size="12" font-weight="bold">📍</text>
+              <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                <text x="16" y="24" text-anchor="middle" font-size="24">📍</text>
               </svg>
             `),
-            scaledSize: new (window as any).google.maps.Size(28, 40),
-            anchor: new (window as any).google.maps.Point(14, 40)
+            scaledSize: new (window as any).google.maps.Size(32, 32),
+            anchor: new (window as any).google.maps.Point(16, 32)
           }
         })
 
