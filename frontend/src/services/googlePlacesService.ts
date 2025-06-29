@@ -57,11 +57,7 @@ class GooglePlacesService {
     // ティラミスに関連するキーワード
     const tiramisuKeywords = [
       'ティラミス',
-      'tiramisu',
-      'イタリアン デザート',
-      'イタリアン カフェ',
-      'ケーキ屋 ティラミス',
-      'パティスリー'
+      'tiramisu'
     ];
 
     const allResults: PlaceResult[] = [];
@@ -76,9 +72,23 @@ class GooglePlacesService {
           type: 'cafe|bakery|restaurant'
         });
         
-        // 重複を避けるため、place_idでフィルタリング
+        // 重複を避けるため、place_idでフィルタリング + types チェック
         results.forEach(place => {
-          if (!allResults.find(p => p.place_id === place.place_id)) {
+          const isDuplicate = allResults.find(p => p.place_id === place.place_id);
+          const isExcludedType = this.hasExcludedTypes(place);
+          const isConvenience = this.isConvenienceStore(place);
+          const isSupermarket = this.isSupermarket(place);
+          
+          if (isDuplicate) {
+            console.log(`🔄 重複除外: ${place.name}`);
+          } else if (isExcludedType) {
+            console.log(`🚫 タイプ除外: ${place.name} (types: ${place.types?.join(', ')})`);
+          } else if (isConvenience) {
+            console.log(`🏪 コンビニ除外: ${place.name}`);
+          } else if (isSupermarket) {
+            console.log(`🛒 スーパー除外: ${place.name}`);
+          } else {
+            console.log(`✅ 追加: ${place.name} (types: ${place.types?.join(', ')})`);
             allResults.push(place);
           }
         });
@@ -167,6 +177,77 @@ class GooglePlacesService {
     });
     
     return store;
+  }
+
+  // コンビニかどうかを判定
+  private isConvenienceStore(place: PlaceResult): boolean {
+    const name = place.name.toLowerCase();
+    const convenienceStoreNames = [
+      'セブンイレブン', 'セブン-イレブン', 'seven-eleven', '7-eleven', '7eleven',
+      'ファミリーマート', 'familymart', 'ファミマ',
+      'ローソン', 'lawson',
+      'ミニストップ', 'ministop',
+      'デイリーヤマザキ', 'daily yamazaki',
+      'セイコーマート', 'seicomart',
+      'ポプラ', 'poplar',
+      'コンビニ', 'convenience store', 'コンビニエンスストア'
+    ];
+    
+    return convenienceStoreNames.some(convenienceName => 
+      name.includes(convenienceName.toLowerCase())
+    );
+  }
+
+  // 除外すべきGoogle Places APIのタイプかどうかを判定
+  private hasExcludedTypes(place: PlaceResult): boolean {
+    if (!place.types) return false;
+    
+    const excludedTypes = [
+      'supermarket',
+      'convenience_store',
+      'grocery_or_supermarket',
+      'gas_station',
+      'pharmacy',
+      'shopping_mall',
+      'department_store'
+    ];
+    
+    return place.types.some(type => excludedTypes.includes(type));
+  }
+
+  // スーパーマーケットかどうかを判定
+  private isSupermarket(place: PlaceResult): boolean {
+    const name = place.name.toLowerCase();
+    const supermarketNames = [
+      'イオン', 'aeon',
+      'イトーヨーカドー', 'ito yokado', 'ito-yokado',
+      'マックスバリュ', 'maxvalu', 'max valu',
+      'ライフ', 'life',
+      'サミット', 'summit',
+      'マルエツ', 'maruetsu',
+      'ヤオコー', 'yaoko',
+      'オーケー', 'ok store', 'ok',
+      'コープ', 'coop', 'co-op',
+      'ユニー', 'uny',
+      '西友', 'seiyu',
+      'ダイエー', 'daiei',
+      'カスミ', 'kasumi',
+      'ベイシア', 'beisia',
+      'ピアゴ', 'piago',
+      'アピタ', 'apita',
+      'フジ', 'fuji',
+      'マルショク', 'marusyoku',
+      'バロー', 'valor',
+      'ヨークベニマル', 'york benimaru',
+      'ヨークマート', 'york mart',
+      'フードワン', 'foodone',
+      'ドン・キホーテ', 'don quijote', 'donki',
+      'スーパー', 'supermarket', 'super market'
+    ];
+    
+    return supermarketNames.some(supermarketName => 
+      name.includes(supermarketName.toLowerCase())
+    );
   }
 }
 
