@@ -115,16 +115,20 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     if (!userLocation || !onPlacesSearch) return
 
     try {
+      console.log(`🔍 周辺検索開始: 半径${searchRadius}m`)
       const places = await googlePlacesService.searchNearbyTiramisuShops(
         { lat: userLocation.latitude, lng: userLocation.longitude },
         searchRadius
       )
+      
+      console.log(`✅ ${places.length}件の店舗を発見`)
       
       // PlaceResultをStore型に変換
       const stores = places.map(place => googlePlacesService.convertToStore(place))
       onPlacesSearch(stores)
     } catch (error) {
       console.error('Places検索エラー:', error)
+      onPlacesSearch([]) // エラー時は空配列を返す
     }
   }
 
@@ -215,6 +219,13 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       searchNearbyPlaces()
     }
   }, [searchRadius])
+
+  // 位置情報が取得されたら検索
+  useEffect(() => {
+    if (isMapLoaded && userLocation && onPlacesSearch) {
+      searchNearbyPlaces()
+    }
+  }, [isMapLoaded, userLocation])
 
   return (
     <div className={`relative ${className}`}>

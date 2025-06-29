@@ -7,11 +7,12 @@ const StoreMapPage: React.FC = () => {
     latitude: number
     longitude: number
   } | null>(null)
-  const [selectedRadius, setSelectedRadius] = useState(5) // 5kmデフォルト
+  const [selectedRadius, setSelectedRadius] = useState(1) // 1kmデフォルト
   const [locationError, setLocationError] = useState<string>('')
   const [selectedStore, setSelectedStore] = useState<Store | null>(null)
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map')
   const [placesStores, setPlacesStores] = useState<Store[]>([]) // Places APIからの店舗
+  const [isSearching, setIsSearching] = useState(false) // 検索中状態
 
   // 現在地を取得
   useEffect(() => {
@@ -48,6 +49,9 @@ const StoreMapPage: React.FC = () => {
 
   const handleRadiusChange = (radius: number) => {
     setSelectedRadius(radius)
+    if (userLocation) {
+      setIsSearching(true) // 範囲変更時も検索開始
+    }
   }
 
   const handleStoreSelect = (store: Store) => {
@@ -57,7 +61,15 @@ const StoreMapPage: React.FC = () => {
   const handlePlacesSearch = (places: Store[]) => {
     console.log('🔍 Places API検索結果:', places)
     setPlacesStores(places)
+    setIsSearching(false) // 検索完了
   }
+
+  // 位置情報が取得されたら検索開始
+  useEffect(() => {
+    if (userLocation && !isSearching) {
+      setIsSearching(true)
+    }
+  }, [userLocation])
 
   const openInGoogleMaps = (store: Store) => {
     if (store.google_maps_url || store.website_url) {
@@ -138,9 +150,19 @@ const StoreMapPage: React.FC = () => {
                 </button>
               ))}
             </div>
-            {placesStores.length > 0 && (
+            {isSearching && (
+              <p className="mt-3 text-sm text-blue-600">
+                🔍 周辺の店舗を検索中...
+              </p>
+            )}
+            {!isSearching && placesStores.length > 0 && (
               <p className="mt-3 text-sm text-green-600">
                 ✅ {placesStores.length}件の実際の店舗が見つかりました
+              </p>
+            )}
+            {!isSearching && placesStores.length === 0 && userLocation && (
+              <p className="mt-3 text-sm text-gray-600">
+                😔 周辺{selectedRadius}km以内に店舗が見つかりませんでした
               </p>
             )}
           </div>
