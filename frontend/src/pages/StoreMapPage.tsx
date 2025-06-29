@@ -10,7 +10,7 @@ const StoreMapPage: React.FC = () => {
   const [selectedRadius, setSelectedRadius] = useState(1) // 1kmデフォルト
   const [locationError, setLocationError] = useState<string>('')
   const [selectedStore, setSelectedStore] = useState<Store | null>(null)
-  const [viewMode, setViewMode] = useState<'map' | 'list'>('map')
+  const [viewMode] = useState<'map' | 'list'>('map')
   const [placesStores, setPlacesStores] = useState<Store[]>([]) // Places APIからの店舗
   const [isSearching, setIsSearching] = useState(false) // 検索中状態
 
