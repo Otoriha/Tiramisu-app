@@ -40,14 +40,25 @@ export interface Store {
   id: number;
   name: string;
   address: string;
-  phone: string;
-  business_hours: string;
+  phone_number?: string;
+  phone?: string; // エイリアス用
+  website_url?: string;
+  opening_hours?: string;
+  business_hours?: string; // エイリアス用
   google_maps_url?: string;
   latitude: number;
   longitude: number;
   distance?: number;
+  distance_km?: number; // バックエンド用
+  rating?: number;
+  review_count?: number;
+  price_level?: number;
+  price_level_label?: string;
+  google_place_id?: string;
+  has_tiramisu?: boolean;
+  favorited?: boolean;
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
 }
 
 // Favorite Types

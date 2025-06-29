@@ -135,7 +135,7 @@ export class RecipeImportService {
   /**
    * タイトルと説明から手順を生成（簡易版）
    */
-  private generateInstructions(title: string, description: string, difficulty: string): string[] {
+  private generateInstructions(title: string, description: string, _difficulty: string): string[] {
     const content = (title + ' ' + description).toLowerCase()
 
     // ヴィーガンレシピの場合

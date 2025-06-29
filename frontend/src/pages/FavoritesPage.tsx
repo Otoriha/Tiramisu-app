@@ -19,9 +19,9 @@ const FavoritesPage: React.FC = () => {
 
   const renderRecipeCard = (recipe: Recipe, favoriteId: number) => {
     // APIレスポンスのプロパティ名に合わせて修正
-    const title = recipe.title || recipe.name
-    const duration = recipe.duration || recipe.cooking_time
-    const viewCount = recipe.view_count || recipe.views_count || 0
+    const title = recipe.title
+    const duration = recipe.duration
+    // const viewCount = recipe.view_count || 0
     const thumbnailUrl = recipe.thumbnail_url
     
     return (

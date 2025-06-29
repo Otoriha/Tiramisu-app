@@ -1,57 +1,23 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useRecipes } from '../hooks/useRecipes'
-import { useStores } from '../hooks/useStores'
 import { SearchInput } from '../components/SearchInput'
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate()
-  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null)
-  const [locationError, setLocationError] = useState<string>('')
 
   // 人気レシピを取得（最初の6件）
   const { data: recipesResponse, isLoading: recipesLoading, error: recipesError } = useRecipes({
     per_page: 6
   })
 
-  // 近くのストアを取得（位置情報があれば位置ベース、なければ最初の4件）
-  const { data: storesResponse, isLoading: storesLoading, error: storesError } = useStores({
-    ...(userLocation && {
-      latitude: userLocation.latitude,
-      longitude: userLocation.longitude,
-      radius: 10
-    }),
-    per_page: 4
-  })
-
   const recipes = recipesResponse?.data || []
-  const stores = storesResponse?.data || []
 
   // レシピ検索ハンドラー
   const handleRecipeSearch = (query: string) => {
     navigate(`/recipes?q=${encodeURIComponent(query)}`)
   }
 
-  // 位置情報を取得
-  const handleGetLocation = () => {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          })
-          setLocationError('')
-        },
-        (error) => {
-          console.error('位置情報の取得に失敗:', error)
-          setLocationError('位置情報の取得に失敗しました。設定を確認してください。')
-        }
-      )
-    } else {
-      setLocationError('このブラウザは位置情報をサポートしていません。')
-    }
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
@@ -96,32 +62,13 @@ const HomePage: React.FC = () => {
                 あなたの近くのティラミス専門店や<br />
                 おすすめカフェを見つけよう
               </p>
-              <div className="space-y-3">
-                {userLocation ? (
-                  <div className="text-green-600 text-sm mb-3">
-                    ✓ 位置情報を取得済み（近くの店舗を表示中）
-                  </div>
-                ) : (
-                  <button
-                    onClick={handleGetLocation}
-                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors mb-3"
-                  >
-                    📍 現在地から探す
-                  </button>
-                )}
-                <div>
-                  <Link
-                    to="/stores"
-                    className="inline-block bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors"
-                  >
-                    全ての店舗を見る
-                  </Link>
-                </div>
-                {locationError && (
-                  <div className="text-red-600 text-sm mt-2">
-                    {locationError}
-                  </div>
-                )}
+              <div>
+                <Link
+                  to="/stores"
+                  className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  🗺️ マップで探す
+                </Link>
               </div>
             </div>
           </div>
@@ -162,7 +109,7 @@ const HomePage: React.FC = () => {
                   className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
                 >
                   <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                    {recipe.name}
+                    {recipe.title}
                   </h3>
                   <p className="text-gray-600 text-sm mb-3 line-clamp-2">
                     {recipe.description}
@@ -179,7 +126,7 @@ const HomePage: React.FC = () => {
                         recipe.difficulty === 'medium' ? '普通' : 
                         recipe.difficulty === 'hard' ? '本格派' : '')}
                     </span>
-                    <span>🕒 {recipe.duration || recipe.cooking_time}分</span>
+                    <span>🕒 {recipe.duration}分</span>
                   </div>
                 </Link>
               ))}
@@ -199,50 +146,18 @@ const HomePage: React.FC = () => {
             </Link>
           </div>
 
-          {storesLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="bg-white rounded-lg shadow-md p-6 animate-pulse">
-                  <div className="h-6 bg-gray-200 rounded mb-4"></div>
-                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-                </div>
-              ))}
-            </div>
-          ) : storesError ? (
-            <div className="text-center py-8 text-red-600">
-              ストア情報の読み込み中にエラーが発生しました
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {stores.map((store) => (
-                <div key={store.id} className="bg-white rounded-lg shadow-md p-6">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                    {store.name}
-                  </h3>
-                  <p className="text-gray-600 text-sm mb-2">
-                    📍 {store.address}
-                  </p>
-                  <p className="text-gray-600 text-sm mb-2">
-                    📞 {store.phone}
-                  </p>
-                  <p className="text-gray-600 text-sm mb-3">
-                    🕒 {store.business_hours}
-                  </p>
-                  {store.google_maps_url && (
-                    <a 
-                      href={store.google_maps_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 text-sm"
-                    >
-                      Google Mapsで開く →
-                    </a>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+          <div className="bg-white rounded-lg shadow-md p-8 text-center">
+            <p className="text-gray-600 mb-4">
+              お近くのティラミスが楽しめるお店を探してみませんか？
+            </p>
+            <Link 
+              to="/stores" 
+              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <span className="mr-2">📍</span>
+              マップで探す
+            </Link>
+          </div>
         </section>
       </div>
     </div>
