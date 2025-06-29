@@ -98,29 +98,6 @@ const StoreMapPage: React.FC = () => {
             ティラミス専門店マップ
           </h1>
           
-          {/* 表示モード切り替え */}
-          <div className="flex bg-white rounded-lg shadow-sm overflow-hidden">
-            <button
-              onClick={() => setViewMode('map')}
-              className={`px-4 py-2 text-sm font-medium transition-colors ${
-                viewMode === 'map'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              🗺️ マップ表示
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              className={`px-4 py-2 text-sm font-medium transition-colors ${
-                viewMode === 'list'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              📋 リスト表示
-            </button>
-          </div>
         </div>
 
         {/* 位置情報エラー */}
@@ -136,7 +113,7 @@ const StoreMapPage: React.FC = () => {
             <h2 className="text-lg font-semibold text-gray-800 mb-4">検索範囲</h2>
             <div className="flex items-center space-x-4">
               <span className="text-gray-600">現在地から:</span>
-              {[1, 3, 5, 10, 20].map((radius) => (
+              {[1, 3, 5, 10].map((radius) => (
                 <button
                   key={radius}
                   onClick={() => handleRadiusChange(radius)}
