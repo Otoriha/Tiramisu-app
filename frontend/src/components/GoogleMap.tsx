@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import type { Store } from '../types/api'
+import { googlePlacesService } from '../services/googlePlacesService'
 
 interface GoogleMapProps {
   stores: Store[]
   userLocation?: { latitude: number; longitude: number }
   onStoreSelect?: (store: Store) => void
+  onPlacesSearch?: (places: Store[]) => void
+  searchRadius?: number
   className?: string
 }
 
@@ -17,11 +20,14 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   stores,
   userLocation,
   onStoreSelect,
+  onPlacesSearch,
+  searchRadius = 5000,
   className = ''
 }) => {
   const mapRef = useRef<HTMLDivElement>(null)
   const [map, setMap] = useState<GoogleMapInstance | null>(null)
   const [isMapLoaded, setIsMapLoaded] = useState(false)
+  const [mapError, setMapError] = useState<string>('')
   const markersRef = useRef<any[]>([])
 
   // Google Maps APIの読み込みチェック
@@ -46,7 +52,12 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       }
 
       const script = document.createElement('script')
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyB8ZjTsAJNP7Xr3b1_hFkBk_zXmL0YvQhs'}&libraries=places`
+      const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+      if (!apiKey) {
+        reject(new Error('Google Maps API key not found. Please set VITE_GOOGLE_MAPS_API_KEY in .env.local'))
+        return
+      }
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`
       script.async = true
       script.defer = true
       script.onload = () => resolve()
@@ -80,6 +91,41 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 
     setMap(mapInstance)
     setIsMapLoaded(true)
+    
+    // Places Serviceを初期化
+    initializePlacesService(mapInstance)
+  }
+
+  // Places Serviceの初期化と検索
+  const initializePlacesService = async (mapInstance: any) => {
+    try {
+      await googlePlacesService.initializeService(mapInstance)
+      
+      // 現在地がある場合は自動的に検索
+      if (userLocation && onPlacesSearch) {
+        searchNearbyPlaces()
+      }
+    } catch (error) {
+      console.error('Places Service初期化エラー:', error)
+    }
+  }
+
+  // 周辺のティラミス店舗を検索
+  const searchNearbyPlaces = async () => {
+    if (!userLocation || !onPlacesSearch) return
+
+    try {
+      const places = await googlePlacesService.searchNearbyTiramisuShops(
+        { lat: userLocation.latitude, lng: userLocation.longitude },
+        searchRadius
+      )
+      
+      // PlaceResultをStore型に変換
+      const stores = places.map(place => googlePlacesService.convertToStore(place))
+      onPlacesSearch(stores)
+    } catch (error) {
+      console.error('Places検索エラー:', error)
+    }
   }
 
   // マーカーを追加
@@ -144,6 +190,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       .then(initializeMap)
       .catch(error => {
         console.error('Google Maps API の読み込みに失敗しました:', error)
+        setMapError(error.message || 'Google Maps の読み込みに失敗しました')
       })
   }, [])
 
@@ -162,6 +209,13 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     }
   }, [map, userLocation])
 
+  // 検索範囲が変更されたら再検索
+  useEffect(() => {
+    if (isMapLoaded && userLocation) {
+      searchNearbyPlaces()
+    }
+  }, [searchRadius])
+
   return (
     <div className={`relative ${className}`}>
       <div 
@@ -169,14 +223,22 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         className="w-full h-full min-h-[400px] rounded-lg overflow-hidden"
         style={{ minHeight: '400px' }}
       />
-      {!isMapLoaded && (
+      {mapError ? (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg">
+          <div className="text-center p-4">
+            <div className="text-red-500 text-lg mb-2">⚠️</div>
+            <p className="text-red-600 text-sm font-medium mb-2">マップの読み込みに失敗しました</p>
+            <p className="text-gray-600 text-xs">{mapError}</p>
+          </div>
+        </div>
+      ) : !isMapLoaded ? (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
             <p className="text-gray-600 text-sm">マップを読み込み中...</p>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   )
 }

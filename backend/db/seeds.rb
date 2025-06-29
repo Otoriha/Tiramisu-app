@@ -104,60 +104,8 @@ puts "✅ Created #{Recipe.count} recipes"
 
 puts "\n🏪 Creating tiramisu stores..."
 
-# Sample stores (Tokyo area)
-stores = [
-  {
-    name: "ティラミス専門店 HERO",
-    address: "東京都渋谷区神宮前4-28-26",
-    latitude: 35.6685,
-    longitude: 139.7073,
-    phone_number: "03-1234-5678",
-    website_url: "https://tiramisu-hero.com",
-    opening_hours: "11:00-20:00",
-    google_place_id: "ChIJN1t_example1",
-    rating: 4.5,
-    review_count: 234,
-    price_level: 2
-  },
-  {
-    name: "イタリアンカフェ ドルチェ",
-    address: "東京都新宿区新宿3-14-1",
-    latitude: 35.6896,
-    longitude: 139.7006,
-    phone_number: "03-2345-6789",
-    website_url: "https://dolce-cafe.jp",
-    opening_hours: "10:00-22:00",
-    google_place_id: "ChIJN1t_example2",
-    rating: 4.2,
-    review_count: 156,
-    price_level: 3
-  },
-  {
-    name: "パティスリー ティラミス",
-    address: "東京都港区南青山5-10-1",
-    latitude: 35.6654,
-    longitude: 139.7135,
-    phone_number: "03-3456-7890",
-    website_url: "https://patisserie-tiramisu.com",
-    opening_hours: "10:00-19:00",
-    google_place_id: "ChIJN1t_example3",
-    rating: 4.8,
-    review_count: 412,
-    price_level: 4
-  },
-  {
-    name: "カフェ・ティラミス",
-    address: "東京都中央区銀座6-10-1",
-    latitude: 35.6695,
-    longitude: 139.7631,
-    phone_number: "03-4567-8901",
-    opening_hours: "11:00-21:00",
-    google_place_id: "ChIJN1t_example4",
-    rating: 4.0,
-    review_count: 89,
-    price_level: 2
-  }
-]
+# 実データのみ使用するため、モックデータは作成しない
+stores = []
 
 stores.each do |store_data|
   Store.find_or_create_by!(google_place_id: store_data[:google_place_id]) do |store|

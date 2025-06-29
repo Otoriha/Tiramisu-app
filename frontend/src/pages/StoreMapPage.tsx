@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useStores } from '../hooks/useStores'
 import { GoogleMap } from '../components'
 import type { Store } from '../types/api'
 
@@ -12,6 +11,7 @@ const StoreMapPage: React.FC = () => {
   const [locationError, setLocationError] = useState<string>('')
   const [selectedStore, setSelectedStore] = useState<Store | null>(null)
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map')
+  const [placesStores, setPlacesStores] = useState<Store[]>([]) // Places APIからの店舗
 
   // 現在地を取得
   useEffect(() => {
@@ -33,17 +33,18 @@ const StoreMapPage: React.FC = () => {
     }
   }, [])
 
-  // ストアデータを取得（位置情報がある場合は範囲検索）
-  const { data: storesResponse, isLoading, error } = useStores({
-    ...(userLocation && {
-      latitude: userLocation.latitude,
-      longitude: userLocation.longitude,
-      radius: selectedRadius
-    }),
-    per_page: 50
-  })
+  // Places APIのデータのみ使用
+  const stores = placesStores
+  const isLoading = false // Places APIの読み込み状態は別途管理
+  const error = null
 
-  const stores = storesResponse?.data || []
+  // デバッグ用のログ
+  console.log('🏪 Store data:', {
+    placesStores,
+    stores,
+    userLocation,
+    selectedRadius
+  })
 
   const handleRadiusChange = (radius: number) => {
     setSelectedRadius(radius)
@@ -53,9 +54,14 @@ const StoreMapPage: React.FC = () => {
     setSelectedStore(store)
   }
 
+  const handlePlacesSearch = (places: Store[]) => {
+    console.log('🔍 Places API検索結果:', places)
+    setPlacesStores(places)
+  }
+
   const openInGoogleMaps = (store: Store) => {
-    if (store.google_maps_url) {
-      window.open(store.google_maps_url, '_blank')
+    if (store.google_maps_url || store.website_url) {
+      window.open(store.google_maps_url || store.website_url, '_blank')
     } else {
       // Google Maps URLがない場合は座標で検索
       const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${store.latitude},${store.longitude}`
@@ -132,6 +138,11 @@ const StoreMapPage: React.FC = () => {
                 </button>
               ))}
             </div>
+            {placesStores.length > 0 && (
+              <p className="mt-3 text-sm text-green-600">
+                ✅ {placesStores.length}件の実際の店舗が見つかりました
+              </p>
+            )}
           </div>
         )}
 
@@ -145,6 +156,8 @@ const StoreMapPage: React.FC = () => {
                   stores={stores}
                   userLocation={userLocation || undefined}
                   onStoreSelect={handleStoreSelect}
+                  onPlacesSearch={handlePlacesSearch}
+                  searchRadius={selectedRadius * 1000} // kmをmに変換
                   className="h-[600px]"
                 />
               </div>
@@ -172,9 +185,9 @@ const StoreMapPage: React.FC = () => {
                 <div className="p-6">
                   <h3 className="text-lg font-semibold text-gray-800 mb-4">
                     {selectedStore.name}
-                    {selectedStore.distance && (
+                    {(selectedStore.distance_km || selectedStore.distance) && (
                       <span className="text-sm font-normal text-blue-600 ml-2">
-                        {selectedStore.distance.toFixed(1)}km
+                        {(selectedStore.distance_km || selectedStore.distance)?.toFixed(1)}km
                       </span>
                     )}
                   </h3>
@@ -185,22 +198,22 @@ const StoreMapPage: React.FC = () => {
                       <span className="text-gray-700">{selectedStore.address}</span>
                     </div>
                     
-                    {selectedStore.phone && (
+                    {(selectedStore.phone_number || selectedStore.phone) && (
                       <div className="flex items-center">
                         <span className="mr-3">📞</span>
                         <a 
-                          href={`tel:${selectedStore.phone}`}
+                          href={`tel:${selectedStore.phone_number || selectedStore.phone}`}
                           className="text-blue-600 hover:text-blue-800"
                         >
-                          {selectedStore.phone}
+                          {selectedStore.phone_number || selectedStore.phone}
                         </a>
                       </div>
                     )}
                     
-                    {selectedStore.business_hours && (
+                    {(selectedStore.opening_hours || selectedStore.business_hours) && (
                       <div className="flex items-start">
                         <span className="mr-3 mt-1">🕒</span>
-                        <span className="text-gray-700">{selectedStore.business_hours}</span>
+                        <span className="text-gray-700">{selectedStore.opening_hours || selectedStore.business_hours}</span>
                       </div>
                     )}
                     
@@ -302,9 +315,9 @@ const StoreMapPage: React.FC = () => {
                             <div className="flex-1">
                               <h3 className="font-semibold text-gray-800 mb-1">
                                 {store.name}
-                                {store.distance && (
+                                {(store.distance_km || store.distance) && (
                                   <span className="text-sm font-normal text-blue-600 ml-2">
-                                    {store.distance.toFixed(1)}km
+                                    {(store.distance_km || store.distance)?.toFixed(1)}km
                                   </span>
                                 )}
                               </h3>
