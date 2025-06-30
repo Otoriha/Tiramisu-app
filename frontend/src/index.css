@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import luxury component styles */
+@import './styles/luxury-components.css';
+
 @layer base {
   :root {
     --background: 0 0% 100%;
