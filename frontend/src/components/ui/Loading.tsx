@@ -1,6 +1,6 @@
 import React from 'react'
 import { clsx } from 'clsx'
-import { Loader2 } from 'lucide-react'
+import { Loader2 } from '@/components/icons'
 
 interface LoadingProps {
   variant?: 'default' | 'luxury' | 'spinner' | 'dots' | 'pulse' | 'brand'

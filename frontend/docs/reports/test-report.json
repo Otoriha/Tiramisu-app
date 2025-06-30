@@ -1,0 +1,171 @@
+{
+  "testDate": "2025-06-30T08:04:21.249Z",
+  "appURL": "http://localhost:5174",
+  "totalTests": 5,
+  "passedTests": 3,
+  "basicTests": [
+    {
+      "test": "ホームページ読み込み",
+      "passed": true,
+      "details": "ページタイトル: Vite + React + TS"
+    },
+    {
+      "test": "ナビゲーションメニューの存在",
+      "passed": true,
+      "details": "ナビゲーション要素数: 1"
+    },
+    {
+      "test": "ヘッダーの存在",
+      "passed": false,
+      "details": "ヘッダーが見つかりません"
+    },
+    {
+      "test": "ナビゲーションリンクの検出",
+      "passed": true,
+      "details": "内部リンク数: 8"
+    },
+    {
+      "test": "UI要素の確認",
+      "passed": false,
+      "details": {
+        "header": false,
+        "navigation": true,
+        "main": true,
+        "footer": false,
+        "buttons": 11,
+        "links": 8,
+        "images": 1,
+        "forms": 0
+      }
+    }
+  ],
+  "pageNavigationResults": [
+    {
+      "page": "ホーム",
+      "path": "/",
+      "loaded": true,
+      "title": "Vite + React + TS"
+    },
+    {
+      "page": "About",
+      "path": "/about",
+      "loaded": true,
+      "title": "Vite + React + TS"
+    },
+    {
+      "page": "Search",
+      "path": "/search",
+      "loaded": true,
+      "title": "Tiramisu Search"
+    },
+    {
+      "page": "Contact",
+      "path": "/contact",
+      "loaded": true,
+      "title": "Vite + React + TS"
+    },
+    {
+      "page": "Videos",
+      "path": "/videos",
+      "loaded": false,
+      "title": "Vite + React + TS"
+    }
+  ],
+  "linkTestResults": [
+    {
+      "text": "🏠TiramisuItalian Artisan",
+      "href": "/",
+      "worked": true,
+      "currentURL": "http://localhost:5174/",
+      "type": "navigation"
+    },
+    {
+      "text": "Menu",
+      "href": "/recipes",
+      "worked": true,
+      "currentURL": "http://localhost:5174/recipes",
+      "type": "navigation"
+    },
+    {
+      "text": "Order",
+      "href": "/stores",
+      "worked": true,
+      "currentURL": "http://localhost:5174/stores",
+      "type": "navigation"
+    },
+    {
+      "text": "About",
+      "href": "/about",
+      "worked": true,
+      "currentURL": "http://localhost:5174/about",
+      "type": "navigation"
+    },
+    {
+      "text": "Contact",
+      "href": "/contact",
+      "worked": true,
+      "currentURL": "http://localhost:5174/contact",
+      "type": "navigation"
+    },
+    {
+      "text": "",
+      "href": "/search",
+      "worked": true,
+      "currentURL": "http://localhost:5174/search",
+      "type": "navigation"
+    },
+    {
+      "text": "すべて見る →",
+      "href": "/search",
+      "worked": true,
+      "currentURL": "http://localhost:5174/search",
+      "type": "navigation"
+    },
+    {
+      "text": "すべて見る →",
+      "href": "/recipes",
+      "worked": true,
+      "currentURL": "http://localhost:5174/recipes",
+      "type": "navigation"
+    }
+  ],
+  "uiElements": {
+    "header": false,
+    "navigation": true,
+    "main": true,
+    "footer": false,
+    "buttons": 11,
+    "links": 8,
+    "images": 1,
+    "forms": 0
+  },
+  "interactionResults": [
+    {
+      "element": "button",
+      "text": "",
+      "interaction": "click",
+      "success": true
+    },
+    {
+      "element": "input",
+      "interaction": "fill",
+      "success": true
+    }
+  ],
+  "screenshots": [
+    "test-screenshots/01-homepage.png",
+    "test-screenshots/final-state.png",
+    "test-screenshots/link-1-TiramisuItalianArtisan.png",
+    "test-screenshots/link-2-Menu.png",
+    "test-screenshots/link-3-Order.png",
+    "test-screenshots/link-4-About.png",
+    "test-screenshots/link-5-Contact.png",
+    "test-screenshots/link-6-unnamed.png",
+    "test-screenshots/link-7-unnamed.png",
+    "test-screenshots/link-8-unnamed.png",
+    "test-screenshots/page-about.png",
+    "test-screenshots/page-contact.png",
+    "test-screenshots/page-search.png",
+    "test-screenshots/page-ホーム.png"
+  ]
+}

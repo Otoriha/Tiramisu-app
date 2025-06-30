@@ -4,7 +4,7 @@ import { useFavorites } from '../hooks/useFavorites'
 import { Loading } from '../components/ui/Loading'
 import { ConfirmationModal } from '../components/ui/Modal'
 import type { Recipe, Store } from '../types/api'
-import { Heart } from 'lucide-react'
+import { Heart } from '@/components/icons'
 
 const FavoritesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'recipes' | 'stores'>('recipes')

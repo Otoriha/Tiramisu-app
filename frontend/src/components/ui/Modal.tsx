@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { clsx } from 'clsx'
-import { X } from 'lucide-react'
+import { X } from '@/components/icons'
 import { Button } from './button'
 
 interface ModalProps {

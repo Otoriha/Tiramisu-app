@@ -13,7 +13,7 @@ import {
   PlayCircle, 
   ArrowLeft,
   CheckCircle,
-} from 'lucide-react'
+} from '@/components/icons'
 
 const RecipeDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()

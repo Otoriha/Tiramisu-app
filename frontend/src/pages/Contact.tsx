@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Card, CardContent } from '../components/ui/Card'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
-import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react'
+import { MapPin, Phone, Mail, Clock, Send } from '@/components/icons'
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
