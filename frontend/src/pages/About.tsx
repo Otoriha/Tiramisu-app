@@ -1,8 +1,12 @@
 import React from 'react'
 import OptimizedImage from '../components/ui/OptimizedImage'
 import { Card, CardContent } from '../components/ui/Card'
+import { Button } from '../components/ui/button'
+import { useNavigate } from 'react-router-dom'
 
 const About: React.FC = () => {
+  const navigate = useNavigate()
+
   return (
     <div className="min-h-screen bg-luxury-cream-50">
       {/* Hero Section */}
@@ -55,7 +59,7 @@ const About: React.FC = () => {
           </h2>
           
           <div className="space-y-12">
-            <Card variant="luxury" className="p-8">
+            <Card variant="luxury" className="p-8" hoverable>
               <CardContent>
                 <h3 className="text-2xl font-semibold text-luxury-brown-900 mb-4">
                   イタリアからの贈り物
@@ -157,7 +161,7 @@ const About: React.FC = () => {
             Meet Our Team
           </h2>
           
-          <Card variant="luxury" className="p-8">
+          <Card variant="glass" className="p-8 backdrop-blur-md" hoverable>
             <CardContent>
               <div className="text-6xl mb-6">👨‍🍳</div>
               <h3 className="text-2xl font-semibold text-luxury-brown-900 mb-4">
@@ -174,6 +178,36 @@ const About: React.FC = () => {
               </p>
             </CardContent>
           </Card>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-luxury-brown-800 to-luxury-brown-900">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
+            本物のティラミスを体験しませんか？
+          </h2>
+          <p className="text-xl text-white/90 mb-8">
+            職人が作る極上のティラミスをお楽しみください
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              variant="luxury"
+              size="lg"
+              onClick={() => navigate('/contact')}
+              className="min-w-[200px]"
+            >
+              お問い合わせ
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => navigate('/stores')}
+              className="min-w-[200px] border-white text-white hover:bg-white/10"
+            >
+              店舗を探す
+            </Button>
+          </div>
         </div>
       </section>
     </div>

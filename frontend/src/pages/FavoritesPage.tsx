@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useFavorites } from '../hooks/useFavorites'
+import { Loading } from '../components/ui/Loading'
+import { ConfirmationModal } from '../components/ui/Modal'
 import type { Recipe, Store } from '../types/api'
+import { Heart } from 'lucide-react'
 
 const FavoritesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'recipes' | 'stores'>('recipes')
@@ -11,9 +14,16 @@ const FavoritesPage: React.FC = () => {
   const recipesFavorites = favorites.filter(fav => fav.favoritable_type === 'Recipe')
   const storesFavorites = favorites.filter(fav => fav.favoritable_type === 'Store')
 
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null)
+
   const handleRemoveFavorite = (favoriteId: number) => {
-    if (confirm('お気に入りから削除しますか？')) {
-      deleteMutation.mutate(favoriteId)
+    setConfirmDeleteId(favoriteId)
+  }
+
+  const confirmDelete = () => {
+    if (confirmDeleteId) {
+      deleteMutation.mutate(confirmDeleteId)
+      setConfirmDeleteId(null)
     }
   }
 
@@ -137,18 +147,13 @@ const FavoritesPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-luxury-cream-50">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">お気に入り</h1>
-          <div className="space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="bg-white rounded-lg shadow-md p-6 animate-pulse">
-                <div className="h-6 bg-gray-200 rounded mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-              </div>
-            ))}
-          </div>
+          <h1 className="luxury-heading-2 mb-6 flex items-center gap-3">
+            <Heart className="w-8 h-8 text-luxury-warm-600" />
+            お気に入り
+          </h1>
+          <Loading variant="luxury" size="lg" text="お気に入りを読み込み中..." />
         </div>
       </div>
     )
@@ -169,9 +174,17 @@ const FavoritesPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-luxury-cream-50">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">お気に入り</h1>
+        <div className="text-center mb-8">
+          <h1 className="luxury-heading-2 mb-4 flex items-center justify-center gap-3">
+            <Heart className="w-8 h-8 text-luxury-warm-600" />
+            お気に入り
+          </h1>
+          <p className="luxury-body-large text-luxury-brown-600">
+            あなたのお気に入りのレシピと店舗
+          </p>
+        </div>
 
         {/* タブナビゲーション */}
         <div className="bg-white rounded-lg shadow-sm mb-8 overflow-hidden">
@@ -275,6 +288,19 @@ const FavoritesPage: React.FC = () => {
             )}
           </div>
         )}
+
+        {/* 削除確認モーダル */}
+        <ConfirmationModal
+          isOpen={confirmDeleteId !== null}
+          onClose={() => setConfirmDeleteId(null)}
+          onConfirm={confirmDelete}
+          title="お気に入りから削除"
+          description="この項目をお気に入りから削除しますか？"
+          confirmText="削除"
+          cancelText="キャンセル"
+          variant="luxury"
+          danger={true}
+        />
       </div>
     </div>
   )
