@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { SearchInput, VideoGrid, SkeletonCard } from '../components'
+import { Card, CardContent } from '../components/ui/Card'
+import { Button } from '../components/ui/button'
+import { Loading } from '../components/ui/Loading'
 import useYouTubeSearch from '../hooks/useYouTubeSearch'
 import type { VideoCardProps } from '../components/VideoCard'
+import { Search, AlertCircle, RefreshCw } from 'lucide-react'
 
 const SearchPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -56,18 +60,29 @@ const SearchPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-luxury-cream-50">
       <div className="container mx-auto px-4 py-8">
         <header className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center">
-            Tiramisu Search
-          </h1>
+          <div className="text-center mb-8">
+            <h1 className="luxury-heading-2 mb-4">
+              <span className="flex items-center justify-center gap-3">
+                <Search className="w-8 h-8 text-luxury-warm-600" />
+                TiraLuce Search
+              </span>
+            </h1>
+            <p className="luxury-body-large text-luxury-brown-600">
+              YouTubeからティラミスレシピ動画を検索
+            </p>
+          </div>
           <div className="max-w-2xl mx-auto">
             <SearchInput
+              variant="luxury"
+              size="lg"
               onSearch={handleSearch}
-              placeholder="YouTube動画を検索..."
+              placeholder="ティラミス レシピ、作り方..."
               disabled={isLoading}
               defaultValue={searchQuery}
+              animated={true}
             />
           </div>
         </header>
@@ -75,29 +90,36 @@ const SearchPage: React.FC = () => {
         <main>
           {error && (
             <div className="text-center py-12">
-              <div className="mb-6 p-6 bg-red-50 border border-red-200 text-red-800 rounded-lg max-w-md mx-auto">
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold mb-2">エラーが発生しました</h3>
-                  <p className="text-sm">{error.message}</p>
-                </div>
-                <button
-                  onClick={() => refetch()}
-                  className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
-                >
-                  再試行
-                </button>
-              </div>
+              <Card variant="outline" className="max-w-md mx-auto border-red-300 bg-red-50/50">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-center mb-4">
+                    <AlertCircle className="w-8 h-8 text-red-600" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2 text-red-800">エラーが発生しました</h3>
+                  <p className="text-sm text-red-700 mb-4">{error.message}</p>
+                  <Button
+                    variant="destructive"
+                    onClick={() => refetch()}
+                    className="w-full"
+                  >
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    再試行
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           )}
 
           {isLoading && (
-            <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                「{searchQuery}」を検索中...
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                {Array.from({ length: 6 }, (_, index) => (
-                  <SkeletonCard key={index} />
+            <div className="text-center py-12">
+              <Loading 
+                variant="luxury" 
+                size="lg" 
+                text={`「${searchQuery}」を検索中...`} 
+              />
+              <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                {Array.from({ length: 8 }, (_, index) => (
+                  <div key={index} className="luxury-skeleton h-48 rounded-xl" />
                 ))}
               </div>
             </div>
@@ -105,28 +127,39 @@ const SearchPage: React.FC = () => {
 
           {!isLoading && !error && searchQuery && videoCards.length === 0 && (
             <div className="text-center py-12">
-              <div className="mb-4">
-                <p className="text-gray-600 text-lg mb-2">「{searchQuery}」に関する動画が見つかりませんでした。</p>
-                <p className="text-gray-500 text-sm">他のキーワードで検索してみてください。</p>
-              </div>
-              <button
-                onClick={() => {
-                  setSearchQuery('')
-                  const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement
-                  searchInput?.focus()
-                }}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-              >
-                別のキーワードで検索
-              </button>
+              <Card variant="glass" className="max-w-md mx-auto">
+                <CardContent className="p-8">
+                  <div className="text-6xl mb-6">🔍</div>
+                  <h3 className="luxury-heading-5 mb-4">結果が見つかりません</h3>
+                  <p className="luxury-body mb-2">「{searchQuery}」に関する動画が見つかりませんでした。</p>
+                  <p className="luxury-body-small text-luxury-brown-500 mb-6">他のキーワードで検索してみてください。</p>
+                  <Button
+                    variant="luxury"
+                    onClick={() => {
+                      setSearchQuery('')
+                      const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement
+                      searchInput?.focus()
+                    }}
+                    className="w-full"
+                  >
+                    <Search className="w-4 h-4 mr-2" />
+                    別のキーワードで検索
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           )}
 
           {!isLoading && !error && videoCards.length > 0 && (
             <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                「{searchQuery}」の検索結果
-              </h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="luxury-heading-4">
+                  「{searchQuery}」の検索結果
+                </h2>
+                <span className="luxury-body-small text-luxury-brown-500 bg-luxury-cream-200 px-3 py-1 rounded-full">
+                  {videoCards.length}件の動画
+                </span>
+              </div>
               <VideoGrid
                 videos={videoCards}
                 columns={4}
@@ -136,10 +169,30 @@ const SearchPage: React.FC = () => {
           )}
 
           {!searchQuery && !isLoading && (
-            <div className="text-center py-12">
-              <p className="text-gray-600 text-lg">
-                上の検索ボックスでYouTube動画を検索してください
-              </p>
+            <div className="text-center py-16">
+              <Card variant="luxury" className="max-w-lg mx-auto">
+                <CardContent className="p-8">
+                  <div className="text-6xl mb-6">🍰</div>
+                  <h3 className="luxury-heading-4 mb-4">ティラミスレシピを探しましょう</h3>
+                  <p className="luxury-body text-luxury-brown-600 mb-6">
+                    上の検索ボックスでYouTube動画を検索してください。<br />
+                    「ティラミス 作り方」「簡単 ティラミス」などで検索できます。
+                  </p>
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    {['ティラミス 作り方', '簡単 ティラミス', 'チョコ ティラミス', '抹茶 ティラミス'].map((suggestion) => (
+                      <Button
+                        key={suggestion}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleSearch(suggestion)}
+                        className="text-xs"
+                      >
+                        {suggestion}
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           )}
         </main>
