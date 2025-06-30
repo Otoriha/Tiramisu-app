@@ -1,0 +1,54 @@
+# Page snapshot
+
+```yaml
+- navigation:
+  - link "🏠 Tiramisu Italian Artisan":
+    - /url: /
+  - link "Menu":
+    - /url: /recipes
+  - link "Order":
+    - /url: /stores
+  - link "About":
+    - /url: /about
+  - link "Contact":
+    - /url: /contact
+  - link "検索":
+    - /url: /search
+  - button "アカウント"
+- main:
+  - heading "Contact Us" [level=1]
+  - paragraph: ご質問、ご相談、特別なご注文など、 お気軽にお問い合わせください。
+  - heading "お問い合わせフォーム" [level=2]
+  - text: お名前 *
+  - textbox "お名前 *"
+  - text: メールアドレス *
+  - textbox "メールアドレス *"
+  - text: 件名 *
+  - textbox "件名 *"
+  - text: メッセージ *
+  - textbox "メッセージ *"
+  - button "送信する"
+  - heading "店舗情報" [level=2]
+  - heading "住所" [level=3]
+  - paragraph: 〒150-0001 東京都渋谷区神宮前3-25-18 ティラミス・アルチザン 表参道本店
+  - heading "電話番号" [level=3]
+  - paragraph: 03-1234-5678
+  - heading "メール" [level=3]
+  - paragraph: info@tiramisu-artisan.jp
+  - heading "営業時間" [level=3]
+  - paragraph: "平日: 10:00 - 20:00"
+  - paragraph: "土日祝: 9:00 - 21:00"
+  - paragraph: "定休日: 毎月第3月曜日"
+  - heading "よくあるご質問" [level=2]
+  - heading "Q. 配送は可能ですか？" [level=3]
+  - paragraph: A. はい、冷蔵配送にて全国にお届けしています。配送料は地域により異なります。
+  - heading "Q. 賞味期限はどれくらいですか？" [level=3]
+  - paragraph: A. 製造日より冷蔵保存で3日間です。なるべくお早めにお召し上がりください。
+  - heading "Q. アレルギー対応はありますか？" [level=3]
+  - paragraph: A. 卵、乳、小麦を使用しています。詳細はお電話でお問い合わせください。
+  - heading "SNSでも情報発信中" [level=2]
+  - button "Instagram"
+  - button "Facebook"
+  - button "Twitter"
+  - paragraph: 最新の商品情報や季節限定メニューをいち早くお届けします。
+```
