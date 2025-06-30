@@ -1,24 +1,39 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { Card, CardContent } from '../components/ui/Card'
+import { Button } from '../components/ui/button'
+import { Home, Search } from 'lucide-react'
 
 const NotFoundPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-6xl font-bold text-gray-800 mb-4">404</h1>
-        <h2 className="text-2xl font-semibold text-gray-600 mb-4">
-          ページが見つかりません
-        </h2>
-        <p className="text-gray-500 mb-8">
-          お探しのページは存在しないか、移動した可能性があります。
-        </p>
-        <Link
-          to="/"
-          className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-        >
-          ホームに戻る
-        </Link>
-      </div>
+    <div className="min-h-screen bg-luxury-cream-50 flex items-center justify-center px-4">
+      <Card variant="luxury" className="max-w-md w-full text-center" hoverable>
+        <CardContent className="p-8">
+          <div className="text-8xl mb-6">🍰</div>
+          <h1 className="text-6xl font-bold text-luxury-brown-900 mb-4">404</h1>
+          <h2 className="luxury-heading-4 text-luxury-brown-700 mb-4">
+            ページが見つかりません
+          </h2>
+          <p className="luxury-body text-luxury-brown-600 mb-8">
+            お探しのページは存在しないか、移動した可能性があります。<br />
+            美味しいティラミスを探しに戻りましょう。
+          </p>
+          <div className="space-y-3">
+            <Link to="/" className="block">
+              <Button variant="luxury" className="w-full">
+                <Home className="w-4 h-4 mr-2" />
+                ホームに戻る
+              </Button>
+            </Link>
+            <Link to="/search" className="block">
+              <Button variant="outline" className="w-full">
+                <Search className="w-4 h-4 mr-2" />
+                レシピを探す
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

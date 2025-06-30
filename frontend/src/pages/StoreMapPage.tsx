@@ -188,25 +188,26 @@ const StoreMapPage: React.FC = () => {
           <div className={`${viewMode === 'map' ? 'lg:col-span-1' : 'w-full'}`}>
             {selectedStore ? (
               /* 選択された店舗の詳細 */
-              <div className="bg-white rounded-lg shadow-md">
-                <div className="p-6 border-b">
+              <Card variant="premium" hoverable>
+                <CardHeader>
                   <div className="flex justify-between items-start">
-                    <h2 className="text-xl font-semibold text-gray-800">店舗詳細</h2>
-                    <button
+                    <CardTitle className="text-luxury-gold-100">店舗詳細</CardTitle>
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => setSelectedStore(null)}
-                      className="text-gray-500 hover:text-gray-700"
-                      title="閉じる"
+                      className="text-luxury-gold-200 hover:text-luxury-gold-100"
                     >
-                      ✕
-                    </button>
+                      <X className="w-4 h-4" />
+                    </Button>
                   </div>
-                </div>
+                </CardHeader>
                 
-                <div className="p-6">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                <CardContent>
+                  <h3 className="text-lg font-semibold text-luxury-gold-100 mb-4">
                     {selectedStore.name}
                     {(selectedStore.distance_km || selectedStore.distance) && (
-                      <span className="text-sm font-normal text-blue-600 ml-2">
+                      <span className="text-sm font-normal text-luxury-gold-300 ml-2">
                         {(selectedStore.distance_km || selectedStore.distance)?.toFixed(1)}km
                       </span>
                     )}
@@ -215,17 +216,17 @@ const StoreMapPage: React.FC = () => {
                   <div className="space-y-3 mb-6">
                     {selectedStore.address && (
                       <div className="flex items-start">
-                        <span className="mr-3 mt-1">📍</span>
-                        <span className="text-gray-700">{selectedStore.address}</span>
+                        <MapPin className="w-4 h-4 mr-3 mt-1 text-luxury-gold-300" />
+                        <span className="text-luxury-gold-200">{selectedStore.address}</span>
                       </div>
                     )}
                     
                     {(selectedStore.phone_number || selectedStore.phone) && (
                       <div className="flex items-center">
-                        <span className="mr-3">📞</span>
+                        <Phone className="w-4 h-4 mr-3 text-luxury-gold-300" />
                         <a 
                           href={`tel:${selectedStore.phone_number || selectedStore.phone}`}
-                          className="text-blue-600 hover:text-blue-800"
+                          className="text-luxury-gold-300 hover:text-luxury-gold-100"
                         >
                           {selectedStore.phone_number || selectedStore.phone}
                         </a>
@@ -234,18 +235,18 @@ const StoreMapPage: React.FC = () => {
                     
                     {(selectedStore.opening_hours || selectedStore.business_hours) && (
                       <div className="flex items-start">
-                        <span className="mr-3 mt-1">🕒</span>
-                        <span className="text-gray-700">{selectedStore.opening_hours || selectedStore.business_hours}</span>
+                        <Clock className="w-4 h-4 mr-3 mt-1 text-luxury-gold-300" />
+                        <span className="text-luxury-gold-200">{selectedStore.opening_hours || selectedStore.business_hours}</span>
                       </div>
                     )}
                     
                     {selectedStore.rating && (
                       <div className="flex items-center">
-                        <span className="mr-3">⭐</span>
-                        <span className="text-gray-700">
+                        <Star className="w-4 h-4 mr-3 text-luxury-gold-300" />
+                        <span className="text-luxury-gold-200">
                           {selectedStore.rating.toFixed(1)} 
                           {selectedStore.review_count && (
-                            <span className="text-gray-500 ml-1">
+                            <span className="text-luxury-gold-300 ml-1">
                               ({selectedStore.review_count}件)
                             </span>
                           )}
@@ -255,32 +256,36 @@ const StoreMapPage: React.FC = () => {
                     
                     {selectedStore.price_level && (
                       <div className="flex items-center">
-                        <span className="mr-3">💰</span>
-                        <span className="text-gray-700">
+                        <DollarSign className="w-4 h-4 mr-3 text-luxury-gold-300" />
+                        <span className="text-luxury-gold-200">
                           {'¥'.repeat(selectedStore.price_level)}
                         </span>
                       </div>
                     )}
                   </div>
                   
-                  <div className="space-y-2">
-                    <button
+                  <div className="space-y-3">
+                    <Button
+                      variant="luxury"
                       onClick={() => openInGoogleMaps(selectedStore)}
-                      className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+                      className="w-full"
                     >
+                      <ExternalLink className="w-4 h-4 mr-2" />
                       Google Mapsで見る
-                    </button>
+                    </Button>
                     
                     {userLocation && (
-                      <button
+                      <Button
+                        variant="outline"
                         onClick={() => getDirections(selectedStore)}
-                        className="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors"
+                        className="w-full border-luxury-gold-400 text-luxury-gold-300 hover:bg-luxury-gold-400/20"
                       >
-                        🧭 道順を表示
-                      </button>
+                        <Navigation className="w-4 h-4 mr-2" />
+                        道順を表示
+                      </Button>
                     )}
                   </div>
-                </div>
+                </CardContent>
               </div>
             ) : (
               /* ストア一覧 */
