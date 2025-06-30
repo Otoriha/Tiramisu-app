@@ -45,12 +45,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({
     <section className={clsx('relative overflow-hidden', className)}>
       {/* Background Image */}
       <div className="absolute inset-0">
-        <OptimizedImage
-          src={backgroundImage}
+        <img
+          src="/images/hero/tiramisu-hero-1920.jpg"
           alt="美しいティラミス"
-          width={1920}
-          height={1080}
-          priority
           className="w-full h-full object-cover"
         />
       </div>
@@ -66,19 +63,19 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="max-w-4xl mx-auto">
           {/* Subtitle */}
           {subtitle && (
-            <p className="luxury-body-large text-luxury-cream-200 mb-4 tracking-wide">
+            <p className="text-lg font-medium text-white/80 mb-4 tracking-wide">
               {subtitle}
             </p>
           )}
 
           {/* Main Title */}
-          <h1 className="luxury-heading-1 mb-6 lg:mb-8">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 lg:mb-8">
             {title}
           </h1>
 
           {/* Description */}
           {description && (
-            <p className="luxury-body-large text-luxury-cream-100 mb-8 lg:mb-12 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg lg:text-xl text-white/90 mb-8 lg:mb-12 max-w-2xl mx-auto leading-relaxed">
               {description}
             </p>
           )}
@@ -113,7 +110,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
 
         {/* Scroll Indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-          <div className="flex flex-col items-center text-luxury-cream-200">
+          <div className="flex flex-col items-center text-white/60">
             <p className="text-sm mb-2">スクロール</p>
             <svg 
               className="w-6 h-6 animate-bounce" 
