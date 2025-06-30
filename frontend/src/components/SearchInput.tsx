@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Search } from "lucide-react"
+import { Search } from "@/components/icons"
 import { debounce } from "@/utils/debounce"
 
 export interface SearchInputProps {

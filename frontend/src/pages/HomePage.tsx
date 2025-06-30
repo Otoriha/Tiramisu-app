@@ -5,7 +5,7 @@ import HeroSection from '../components/ui/HeroSection'
 import { Card, CardContent } from '../components/ui/Card'
 import { Button } from '../components/ui/button'
 import { SearchInput } from '../components/SearchInput'
-import { Clock, MapPin, PlayCircle, ChefHat, Star, TrendingUp } from 'lucide-react'
+import { Clock, MapPin, PlayCircle, ChefHat, Star, TrendingUp } from '@/components/icons'
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate()

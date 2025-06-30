@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from 'react'
 import { clsx } from 'clsx'
-import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react'
+import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from '@/components/icons'
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info'
 

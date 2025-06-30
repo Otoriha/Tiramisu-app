@@ -24,6 +24,18 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'lucide-icons': ['lucide-react'],
+        },
+      },
+    },
+  },
+  optimizeDeps: {
+    include: ['lucide-react'],
+  },
   test: {
     globals: true,
     environment: 'jsdom',

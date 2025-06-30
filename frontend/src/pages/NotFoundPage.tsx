@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Card, CardContent } from '../components/ui/Card'
 import { Button } from '../components/ui/button'
-import { Home, Search } from 'lucide-react'
+import { Home, Search } from '@/components/icons'
 
 const NotFoundPage: React.FC = () => {
   return (

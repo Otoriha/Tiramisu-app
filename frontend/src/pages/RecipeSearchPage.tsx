@@ -5,7 +5,7 @@ import { Card, CardContent } from '../components/ui/Card'
 import { Loading } from '../components/ui/Loading'
 import { useRecipes } from '../hooks/useRecipes'
 import type { RecipeSearchParams, Recipe } from '../types/api'
-import { Clock, ChefHat } from 'lucide-react'
+import { Clock, ChefHat } from '@/components/icons'
 
 const RecipeSearchPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')

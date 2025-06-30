@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { clsx } from 'clsx'
-import { Check, Minus } from 'lucide-react'
+import { Check, Minus } from '@/components/icons'
 
 interface CheckboxProps {
   checked?: boolean

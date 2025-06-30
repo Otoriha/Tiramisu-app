@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Search, User, Menu, X } from 'lucide-react'
+import { Search, User, Menu, X } from './icons'
 
 const Navigation: React.FC = () => {
   const location = useLocation()

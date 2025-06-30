@@ -5,7 +5,7 @@ import { Button } from '../components/ui/button'
 import { Loading } from '../components/ui/Loading'
 import useYouTubeSearch from '../hooks/useYouTubeSearch'
 import type { VideoCardProps } from '../components/VideoCard'
-import { Search, AlertCircle, RefreshCw } from 'lucide-react'
+import { Search, AlertCircle, RefreshCw } from '@/components/icons'
 
 const SearchPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')

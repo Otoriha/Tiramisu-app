@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
 import { Button } from '../components/ui/button'
 import { Loading } from '../components/ui/Loading'
 import type { Store } from '../types/api'
-import { MapPin, Phone, Clock, Star, DollarSign, Navigation, ExternalLink, X, AlertTriangle } from 'lucide-react'
+import { MapPin, Phone, Clock, Star, DollarSign, Navigation, ExternalLink, X, AlertTriangle } from '@/components/icons'
 
 const StoreMapPage: React.FC = () => {
   const [userLocation, setUserLocation] = useState<{
