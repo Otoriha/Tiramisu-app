@@ -296,4 +296,4 @@ const Select: React.FC<SelectProps> = ({
 }
 
 export { Select }
-export type { SelectProps, SelectOption }
+export type { SelectProps }

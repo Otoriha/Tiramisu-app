@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { SearchInput, SearchFilter } from '../components'
+import { Card, CardContent } from '../components/ui/Card'
+import { Loading } from '../components/ui/Loading'
 import { useRecipes } from '../hooks/useRecipes'
 import type { RecipeSearchParams, Recipe } from '../types/api'
+import { Clock, ChefHat } from 'lucide-react'
 
 const RecipeSearchPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -76,47 +79,59 @@ const RecipeSearchPage: React.FC = () => {
   }
 
   const renderRecipeCard = (recipe: Recipe) => (
-    <Link
-      key={recipe.id}
-      to={`/recipes/${recipe.id}`}
-      className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow group"
-    >
-      <h3 className="text-lg font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
-        {recipe.title}
-      </h3>
-      <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-        {recipe.description}
-      </p>
-      <div className="flex justify-between items-center text-sm">
-        <span className={`px-2 py-1 rounded text-xs font-medium ${
-          recipe.difficulty === 'easy' ? 'bg-green-100 text-green-700' :
-          recipe.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-          'bg-red-100 text-red-700'
-        }`}>
-          {recipe.difficulty === 'easy' ? '簡単' :
-           recipe.difficulty === 'medium' ? '普通' : '本格派'}
-        </span>
-        <div className="flex items-center space-x-3 text-gray-500">
-          <span>🕒 {recipe.duration}分</span>
-        </div>
-      </div>
+    <Link key={recipe.id} to={`/recipes/${recipe.id}`} className="group">
+      <Card variant="luxury" className="h-full" hoverable interactive>
+        <CardContent className="p-6">
+          <h3 className="luxury-heading-5 mb-2 group-hover:text-luxury-warm-600 transition-colors line-clamp-2">
+            {recipe.title}
+          </h3>
+          <p className="luxury-body-small text-luxury-brown-600 mb-4 line-clamp-2">
+            {recipe.description}
+          </p>
+          <div className="flex justify-between items-center">
+            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+              recipe.difficulty === 'easy' ? 'bg-green-100 text-green-700' :
+              recipe.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+              'bg-red-100 text-red-700'
+            }`}>
+              {recipe.difficulty === 'easy' ? '簡単' :
+               recipe.difficulty === 'medium' ? '普通' : '本格派'}
+            </span>
+            <div className="flex items-center text-luxury-brown-500">
+              <Clock className="w-4 h-4 mr-1" />
+              <span className="luxury-body-small">{recipe.duration}分</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </Link>
   )
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-luxury-cream-50">
       <div className="container mx-auto px-4 py-8">
         {/* ヘッダー */}
         <header className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center">
-            🍰 ティラミスレシピ検索
-          </h1>
+          <div className="text-center mb-8">
+            <h1 className="luxury-heading-2 mb-4">
+              <span className="flex items-center justify-center gap-3">
+                <ChefHat className="w-8 h-8 text-luxury-warm-600" />
+                ティラミスレシピ検索
+              </span>
+            </h1>
+            <p className="luxury-body-large text-luxury-brown-600">
+              お気に入りのティラミスレシピを見つけましょう
+            </p>
+          </div>
           <div className="max-w-2xl mx-auto mb-6">
             <SearchInput
+              variant="luxury"
+              size="lg"
               onSearch={handleSearch}
               placeholder="レシピを検索..."
               disabled={isLoading}
               defaultValue={searchQuery}
+              animated={true}
             />
           </div>
           
@@ -158,21 +173,11 @@ const RecipeSearchPage: React.FC = () => {
 
           {/* ローディング表示 */}
           {isLoading && (
-            <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                検索中...
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="text-center py-12">
+              <Loading variant="luxury" size="lg" text="レシピを検索中..." />
+              <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {Array.from({ length: 8 }, (_, index) => (
-                  <div key={index} className="bg-white rounded-lg shadow-md p-6 animate-pulse">
-                    <div className="h-6 bg-gray-200 rounded mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
-                    <div className="flex justify-between items-center">
-                      <div className="h-6 bg-gray-200 rounded w-16"></div>
-                      <div className="h-4 bg-gray-200 rounded w-20"></div>
-                    </div>
-                  </div>
+                  <div key={index} className="luxury-skeleton h-48 rounded-xl" />
                 ))}
               </div>
             </div>

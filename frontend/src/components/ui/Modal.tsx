@@ -292,7 +292,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         </div>
       }
     >
-      {/* Additional content can be passed as children if needed */}
+      <div />
     </Modal>
   )
 }
@@ -338,7 +338,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
         </Button>
       }
     >
-      {/* Additional content can be passed as children if needed */}
+      <div />
     </Modal>
   )
 }

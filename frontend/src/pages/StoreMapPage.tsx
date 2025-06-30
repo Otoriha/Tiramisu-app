@@ -111,7 +111,7 @@ const StoreMapPage: React.FC = () => {
 
         {/* 位置情報エラー */}
         {locationError && (
-          <Card variant="outline" className="mb-6 border-yellow-300 bg-yellow-50/50">
+          <Card variant="outlined" className="mb-6 border-yellow-300 bg-yellow-50/50">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <AlertTriangle className="w-5 h-5 text-yellow-600" />
@@ -286,7 +286,7 @@ const StoreMapPage: React.FC = () => {
                     )}
                   </div>
                 </CardContent>
-              </div>
+              </Card>
             ) : (
               /* ストア一覧 */
               <div className="bg-white rounded-lg shadow-md">

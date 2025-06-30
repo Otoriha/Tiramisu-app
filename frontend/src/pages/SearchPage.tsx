@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { SearchInput, VideoGrid, SkeletonCard } from '../components'
+import { SearchInput, VideoGrid } from '../components'
 import { Card, CardContent } from '../components/ui/Card'
 import { Button } from '../components/ui/button'
 import { Loading } from '../components/ui/Loading'
@@ -90,7 +90,7 @@ const SearchPage: React.FC = () => {
         <main>
           {error && (
             <div className="text-center py-12">
-              <Card variant="outline" className="max-w-md mx-auto border-red-300 bg-red-50/50">
+              <Card variant="outlined" className="max-w-md mx-auto border-red-300 bg-red-50/50">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-center mb-4">
                     <AlertCircle className="w-8 h-8 text-red-600" />

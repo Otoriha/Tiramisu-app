@@ -201,12 +201,14 @@ export const useScrollPosition = throttle((callback: (position: number) => void)
   callback(window.scrollY)
 }, 16) // ~60fps
 
+import React from 'react'
+
 // Virtual scrolling helper (basic implementation)
 export const createVirtualList = <T>(
   items: T[],
   itemHeight: number,
   containerHeight: number,
-  renderItem: (item: T, index: number) => React.ReactNode
+  _renderItem: (item: T, index: number) => React.ReactNode
 ) => {
   const [scrollTop, setScrollTop] = React.useState(0)
   

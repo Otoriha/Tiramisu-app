@@ -1,6 +1,5 @@
 import React from 'react'
 import { clsx } from 'clsx'
-import OptimizedImage from './OptimizedImage'
 import { Button } from './button'
 
 interface HeroSectionProps {
@@ -26,7 +25,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   description,
   primaryAction,
   secondaryAction,
-  backgroundImage = '/images/hero/tiramisu-hero',
+  backgroundImage: _backgroundImage,
   overlayOpacity = 0.6,
   className
 }) => {

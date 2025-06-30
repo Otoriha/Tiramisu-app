@@ -1,6 +1,6 @@
 import React from 'react'
 import OptimizedImage from '../components/ui/OptimizedImage'
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
+import { Card, CardContent } from '../components/ui/Card'
 import { Button } from '../components/ui/button'
 import { useNavigate } from 'react-router-dom'
 

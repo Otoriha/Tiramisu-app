@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useFavorites } from '../hooks/useFavorites'
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
-import { Button } from '../components/ui/button'
 import { Loading } from '../components/ui/Loading'
-import { Modal, useModal, ConfirmationModal } from '../components/ui/Modal'
+import { ConfirmationModal } from '../components/ui/Modal'
 import type { Recipe, Store } from '../types/api'
-import { Heart, Clock, MapPin, Phone, Building, Search, X, ExternalLink } from 'lucide-react'
+import { Heart } from 'lucide-react'
 
 const FavoritesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'recipes' | 'stores'>('recipes')

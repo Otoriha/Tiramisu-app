@@ -235,7 +235,7 @@ const ToastProvider: React.FC<ToastProviderProps> = ({
     <ToastContext.Provider value={{ toasts, addToast, removeToast, clearToasts }}>
       {children}
       <ToastContainer position={position} variant={variant} />
-      <style jsx>{`
+      <style>{`
         @keyframes shrink {
           from { width: 100%; }
           to { width: 0%; }

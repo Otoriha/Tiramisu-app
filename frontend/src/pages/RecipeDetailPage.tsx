@@ -13,7 +13,6 @@ import {
   PlayCircle, 
   ArrowLeft,
   CheckCircle,
-  Star
 } from 'lucide-react'
 
 const RecipeDetailPage: React.FC = () => {
@@ -40,8 +39,8 @@ const RecipeDetailPage: React.FC = () => {
     data: favoritesResponse, 
     createMutation, 
     deleteMutation,
-    isLoading: favoritesLoading,
-    error: favoritesError
+    isLoading: _favoritesLoading,
+    error: _favoritesError
   } = useFavorites()
   
   const favorites = favoritesResponse?.data || []
